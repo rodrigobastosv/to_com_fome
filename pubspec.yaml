@@ -13,14 +13,16 @@ dependencies:
   cupertino_icons: ^0.1.2
   flutter_icons: ^1.0.0+1
   bubbled_navigation_bar: ^0.0.4
+  animated_card: ^1.0.0+8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
-
   uses-material-design: true
+  assets:
+    - assets/images/
 
   # fonts:
   #   - family: Schyler

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 import 'pages/favorite_page.dart';
-import 'pages/home_page.dart';
+import 'pages/home_page/home_page.dart';
 import 'pages/orders_page.dart';
 import 'pages/sales_page.dart';
 
@@ -27,30 +27,34 @@ class _HomeState extends State<Home> {
     _pageController = PageController(
         initialPage: 0,
         keepPage: false,
-        viewportFraction: 1.0
+        viewportFraction: 1.0,
     );
-    _pageController.addListener(handlePageChange);
+    _pageController.addListener(_handlePageChange);
 
     super.initState();
   }
 
-  void handlePageChange() {
+  void _handlePageChange() {
     _menuPositionController.absolutePosition = _pageController.page;
   }
 
   @override
   Widget build(BuildContext context) {
+    final mainColor = Theme.of(context).primaryColor;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tô com fome'),
-        leading: Icon(MaterialCommunityIcons.face_profile, color: Colors.purple, size: 32),
+        title: Text('Olá, fulano', style: TextStyle(color: Colors.white),),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset('assets/images/tanamao.jpeg', fit: BoxFit.cover),
+        ),
         actions: <Widget>[
-          Icon(Icons.search, color: Colors.purple, size: 28),
+          Icon(Icons.search, color: Colors.white, size: 28),
           SizedBox(width: 10),
-          Icon(Icons.notifications_none, color: Colors.purple, size: 28)
+          Icon(Icons.notifications_none, color: Colors.white, size: 28)
         ],
         centerTitle: true,
-        backgroundColor: Colors.grey[100],
+        backgroundColor: Color(0xFFf05925),
       ),
       body: PageView(
         controller: _pageController,
@@ -78,25 +82,25 @@ class _HomeState extends State<Home> {
             icon:       Icon(CupertinoIcons.home, size: 30, color: Colors.blue),
             activeIcon: Icon(CupertinoIcons.home, size: 30, color: Colors.white),
             title: Text('Home', style: TextStyle(color: Colors.white, fontSize: 12),),
-            bubbleColor: Colors.purple
+            bubbleColor: mainColor
           ),
           BubbledNavigationBarItem(
             icon:       Icon(Foundation.burst_sale, size: 30, color: Colors.orangeAccent),
             activeIcon: Icon(Foundation.burst_sale, size: 30, color: Colors.white),
             title: Text('Promoções', style: TextStyle(color: Colors.white, fontSize: 12),),
-              bubbleColor: Colors.purple
+              bubbleColor: mainColor
           ),
           BubbledNavigationBarItem(
             icon:       Icon(MaterialIcons.favorite, size: 30, color: Colors.red),
             activeIcon: Icon(MaterialIcons.favorite, size: 30, color: Colors.white),
             title: Text('Info', style: TextStyle(color: Colors.white, fontSize: 12),),
-              bubbleColor: Colors.purple
+              bubbleColor: mainColor
           ),
           BubbledNavigationBarItem(
             icon:       Icon(MaterialCommunityIcons.view_sequential, size: 30, color: Colors.indigo),
             activeIcon: Icon(MaterialCommunityIcons.view_sequential, size: 30, color: Colors.white),
             title: Text('Pedidos', style: TextStyle(color: Colors.white, fontSize: 12),),
-            bubbleColor: Colors.purple
+            bubbleColor: mainColor
           ),
         ],
       ),
