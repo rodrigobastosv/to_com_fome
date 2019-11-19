@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
-import 'pages/favorite_page.dart';
+import 'package:to_com_fome/pages/favorite_page/favorite_page.dart';
 import 'pages/home_page/home_page.dart';
-import 'pages/orders_page.dart';
-import 'pages/sales_page.dart';
+import 'package:to_com_fome/pages/orders_page/orders_page.dart';
+import 'package:to_com_fome/pages/sales_page/sales_page.dart';
 
 class Home extends StatefulWidget {
   Home({Key key}) : super(key: key);
@@ -85,7 +85,7 @@ class _HomeState extends State<Home> {
             bubbleColor: mainColor
           ),
           BubbledNavigationBarItem(
-            icon:       Icon(Foundation.burst_sale, size: 30, color: Colors.orangeAccent),
+            icon:       Icon(Foundation.burst_sale, size: 30, color: Colors.lightGreen),
             activeIcon: Icon(Foundation.burst_sale, size: 30, color: Colors.white),
             title: Text('Promoções', style: TextStyle(color: Colors.white, fontSize: 12),),
               bubbleColor: mainColor
@@ -93,7 +93,7 @@ class _HomeState extends State<Home> {
           BubbledNavigationBarItem(
             icon:       Icon(MaterialIcons.favorite, size: 30, color: Colors.red),
             activeIcon: Icon(MaterialIcons.favorite, size: 30, color: Colors.white),
-            title: Text('Info', style: TextStyle(color: Colors.white, fontSize: 12),),
+            title: Text('Favoritos', style: TextStyle(color: Colors.white, fontSize: 12),),
               bubbleColor: mainColor
           ),
           BubbledNavigationBarItem(

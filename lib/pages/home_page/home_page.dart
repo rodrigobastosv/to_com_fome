@@ -1,7 +1,8 @@
 import 'package:animated_card/animated_card.dart';
 import 'package:flutter/material.dart';
+import 'package:to_com_fome/model/restaurant.dart';
 import 'package:to_com_fome/pages/home_page/mock_home_page.dart';
-import 'package:to_com_fome/mock_data/restaurant.dart';
+import 'package:to_com_fome/pages/restaurant_page/restaurant_page.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -13,15 +14,22 @@ class HomePage extends StatelessWidget {
           child: Card(
             child: Column(
               children: <Widget>[
-                Text(foodSections[i].name, style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold
-                ),),
+                Text(
+                  foodSections[i].name,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
                 Container(
                   height: 160,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemBuilder: (_, i) => RestaurantWidget(restaurants[i]),
+                    itemBuilder: (_, i) => Hero(
+                        tag: restaurants[i].id.toString(),
+                        child: GestureDetector(
+                            onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        RestaurantPage(restaurants[i]))),
+                            child: RestaurantWidget(restaurants[i]))),
                     itemCount: restaurants.length,
                   ),
                 )
@@ -50,9 +58,13 @@ class RestaurantWidget extends StatelessWidget {
           Card(
             semanticContainer: true,
             clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: Image.network(
-              restaurant.assetImage,
-              fit: BoxFit.fill,
+            child: Container(
+              height: 100,
+              width: 200,
+              child: Image.network(
+                restaurant.assetImage,
+                fit: BoxFit.cover,
+              ),
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
@@ -60,7 +72,10 @@ class RestaurantWidget extends StatelessWidget {
             elevation: 5,
             margin: EdgeInsets.all(10),
           ),
-          Text(restaurant.name, style: TextStyle(color: mainColor),),
+          Text(
+            restaurant.name,
+            style: TextStyle(color: mainColor, fontSize: 18),
+          ),
         ],
       ),
     );

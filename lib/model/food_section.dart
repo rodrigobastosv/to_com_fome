@@ -1,4 +1,4 @@
-import 'package:to_com_fome/mock_data/restaurant.dart';
+import 'restaurant.dart';
 
 class FoodSection {
   FoodSection({this.name, this.assetImage, this.restaurants});

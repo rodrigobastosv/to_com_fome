@@ -14,6 +14,7 @@ dependencies:
   flutter_icons: ^1.0.0+1
   bubbled_navigation_bar: ^0.0.4
   animated_card: ^1.0.0+8
+  flutter_staggered_grid_view: ^0.3.0
 
 dev_dependencies:
   flutter_test:
