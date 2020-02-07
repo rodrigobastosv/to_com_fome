@@ -1,5 +1,6 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:to_com_fome/core/API.dart';
 import 'package:to_com_fome/model/category_item.dart';
 import 'package:to_com_fome/model/restaurant.dart';
 
@@ -31,9 +32,10 @@ class _RestaurantPageState extends State<RestaurantPage> {
         width: double.infinity,
         alignment: Alignment.center,
         color: Theme.of(context).primaryColor.withOpacity(0.7),
-        child: Text('Total do Pedido: R\$ ${(totalPedido).toStringAsFixed(2)}', style: TextStyle(
-          fontSize: 18, color: Colors.white
-        ),),
+        child: Text(
+          'Total do Pedido: R\$ ${(totalPedido).toStringAsFixed(2)}',
+          style: TextStyle(fontSize: 18, color: Colors.white),
+        ),
       ),
       body: CustomScrollView(
         slivers: <Widget>[
@@ -41,7 +43,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
             expandedHeight: 150.0,
             flexibleSpace: FlexibleSpaceBar(
               background: Image.network(
-                widget.restaurant.assetImage,
+                '$BASE_IMAGE_URL/${widget.restaurant.logoRestaurante}',
                 fit: BoxFit.cover,
               ),
             ),
@@ -59,7 +61,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                       height: 8,
                     ),
                     Text(
-                      widget.restaurant.name,
+                      widget.restaurant.restaurante,
                       style: TextStyle(
                           fontSize: 28, color: Theme.of(context).primaryColor),
                     ),
@@ -189,28 +191,32 @@ class _RestaurantPageState extends State<RestaurantPage> {
   List<Widget> _getCategoryItems(List<CategoryItem> items) {
     return items
         .map((categoryItem) => ListTile(
-      title: Text(categoryItem.name),
-      leading: IconButton(icon: Icon(Icons.add_shopping_cart), onPressed: () {
-        Flushbar(
-          message: "Item adicionado ao Pedido",
-          icon: Icon(
-            Icons.check,
-            size: 28.0,
-            color: Colors.green,
-          ),
-          backgroundGradient: LinearGradient(colors: [Colors.green, Colors.greenAccent],),
-          duration: Duration(seconds: 1),
-        )..show(context);
+              title: Text(categoryItem.name),
+              leading: IconButton(
+                  icon: Icon(Icons.add_shopping_cart),
+                  onPressed: () {
+                    Flushbar(
+                      message: "Item adicionado ao Pedido",
+                      icon: Icon(
+                        Icons.check,
+                        size: 28.0,
+                        color: Colors.green,
+                      ),
+                      backgroundGradient: LinearGradient(
+                        colors: [Colors.green, Colors.greenAccent],
+                      ),
+                      duration: Duration(seconds: 1),
+                    )..show(context);
 
-        setState(() {
-          totalPedido += categoryItem.price;
-        });
-      }),
-      trailing: Text(
-        'R\$ ${categoryItem.price.toStringAsFixed(2)}',
-        style: TextStyle(color: Colors.green),
-      ),
-    ))
+                    setState(() {
+                      totalPedido += categoryItem.price;
+                    });
+                  }),
+              trailing: Text(
+                'R\$ ${categoryItem.price.toStringAsFixed(2)}',
+                style: TextStyle(color: Colors.green),
+              ),
+            ))
         .toList();
   }
 }

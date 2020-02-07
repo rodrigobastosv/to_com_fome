@@ -1,8 +1,29 @@
 class Restaurant {
-  Restaurant({this.id, this.name, this.assetImage, this.stars});
+  String restaurantId;
+  String restaurante;
+  String logoRestaurante;
+  int stars;
 
-  final int id;
-  final String name;
-  final String assetImage;
-  final double stars;
+  Restaurant(
+      {this.restaurantId, this.restaurante, this.logoRestaurante, this.stars});
+
+  Restaurant.fromJson(Map<String, dynamic> json) {
+    restaurantId = json['restaurant_id'];
+    restaurante = json['restaurante'];
+    logoRestaurante = json['logo_restaurante'];
+    stars = 4;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['restaurant_id'] = this.restaurantId;
+    data['restaurante'] = this.restaurante;
+    data['logo_restaurante'] = this.logoRestaurante;
+    return data;
+  }
+
+  @override
+  String toString() {
+    return 'Restaurant{restaurantId: $restaurantId, restaurante: $restaurante, logoRestaurante: $logoRestaurante, stars: $stars}';
+  }
 }
