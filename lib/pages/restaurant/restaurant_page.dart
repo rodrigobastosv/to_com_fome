@@ -43,7 +43,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
             expandedHeight: 150.0,
             flexibleSpace: FlexibleSpaceBar(
               background: Image.network(
-                '$BASE_IMAGE_URL/${widget.restaurant.logoRestaurante}',
+                '$BASE_RESTAURANT_IMAGE_URL/${widget.restaurant.logoRestaurante}',
                 fit: BoxFit.cover,
               ),
             ),

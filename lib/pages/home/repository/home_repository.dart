@@ -11,7 +11,6 @@ class HomeRepository {
 
   Future<List<CategoryRestaurant>> getCategoryRestaurant() async {
     try {
-      print(1);
       final response = await client.get(
         CATEGORIES,
         options: Options(
@@ -24,6 +23,7 @@ class HomeRepository {
           (i) => CategoryRestaurant.fromJson(decodedResponse[i]));
     } catch (e) {
       print(e.toString());
+      return null;
     }
   }
 }

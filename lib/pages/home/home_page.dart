@@ -21,8 +21,6 @@ class HomePage extends StatelessWidget {
             itemBuilder: (_, i) {
               final category = categories[i];
               final restaurants = category.restaurants;
-              print(category.name);
-              print(restaurants);
               return AnimatedCard(
                 child: Card(
                   child: Column(
@@ -100,7 +98,7 @@ class RestaurantWidget extends StatelessWidget {
               height: 100,
               width: 200,
               child: Image.network(
-                '$BASE_IMAGE_URL/${restaurant.logoRestaurante}',
+                '$BASE_RESTAURANT_IMAGE_URL/${restaurant.logoRestaurante}',
                 fit: BoxFit.cover,
               ),
             ),
