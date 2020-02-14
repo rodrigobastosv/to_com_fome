@@ -1,27 +1,31 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_com_fome/core/API.dart';
-import 'package:to_com_fome/model/category_item.dart';
-import 'package:to_com_fome/model/restaurant.dart';
+import 'package:to_com_fome/pages/restaurant/bloc/bloc.dart';
 
 import 'mock_restaurant_page.dart';
 
 class RestaurantPage extends StatefulWidget {
-  const RestaurantPage(this.restaurant);
-
-  final Restaurant restaurant;
-
   @override
   _RestaurantPageState createState() => _RestaurantPageState();
 }
 
 class _RestaurantPageState extends State<RestaurantPage> {
   double totalPedido;
+  RestaurantPickedBloc restaurantPickedBloc;
 
   @override
   void initState() {
     totalPedido = 0.0;
+    restaurantPickedBloc = BlocProvider.of<RestaurantPickedBloc>(context);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    restaurantPickedBloc.close();
+    super.dispose();
   }
 
   @override
@@ -43,7 +47,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
             expandedHeight: 150.0,
             flexibleSpace: FlexibleSpaceBar(
               background: Image.network(
-                '$BASE_RESTAURANT_IMAGE_URL/${widget.restaurant.logoRestaurante}',
+                '$BASE_RESTAURANT_IMAGE_URL/${restaurantPickedBloc.restaurantPicked.logoRestaurante}',
                 fit: BoxFit.cover,
               ),
             ),
@@ -61,7 +65,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                       height: 8,
                     ),
                     Text(
-                      widget.restaurant.restaurante,
+                      restaurantPickedBloc.restaurantPicked.restaurante,
                       style: TextStyle(
                           fontSize: 28, color: Theme.of(context).primaryColor),
                     ),
@@ -73,10 +77,12 @@ class _RestaurantPageState extends State<RestaurantPage> {
                         ),
                         SizedBox(width: 12),
                         Text(
-                          widget.restaurant.stars.toString(),
+                          restaurantPickedBloc.restaurantPicked.stars
+                              .toString(),
                           style: TextStyle(
-                              fontSize: 18,
-                              color: Theme.of(context).primaryColor),
+                            fontSize: 18,
+                            color: Theme.of(context).primaryColor,
+                          ),
                         )
                       ],
                     )
@@ -171,14 +177,71 @@ class _RestaurantPageState extends State<RestaurantPage> {
                 SizedBox(
                   height: 2,
                 ),
-                ListView.builder(
-                  controller: ScrollController(),
-                  shrinkWrap: true,
-                  itemBuilder: (_, i) => ExpansionTile(
-                    title: Text(restaurantInfo[i].name),
-                    children: _getCategoryItems(restaurantInfo[i].items),
-                  ),
-                  itemCount: restaurantInfo.length,
+                BlocBuilder<RestaurantPickedBloc, RestaurantPickedState>(
+                  builder: (_, state) {
+                    if (state is ItemsLoadingState) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          CircularProgressIndicator(),
+                          SizedBox(height: 14),
+                          Text('Carregando items do cardápio'),
+                        ],
+                      );
+                    } else if (state is ItemsLoadedState) {
+                      final restaurantItems = state.items;
+                      return ListView.builder(
+                        controller: ScrollController(),
+                        shrinkWrap: true,
+                        itemBuilder: (_, i) => ListTile(
+                          title: Row(
+                            children: <Widget>[
+                              Text(restaurantItems[i].name),
+                              Spacer(),
+                              Text(
+                                'R\$ ${restaurantItems[i].price.toStringAsFixed(2)}',
+                                style: TextStyle(color: Colors.green),
+                              ),
+                            ],
+                          ),
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                '$BASE_ITEM_IMAGE_URL/${restaurantItems[i].image}'),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.add_shopping_cart),
+                            onPressed: () {
+                              Flushbar(
+                                message: "Item adicionado ao Pedido",
+                                icon: Icon(
+                                  Icons.check,
+                                  size: 28.0,
+                                  color: Colors.green,
+                                ),
+                                backgroundGradient: LinearGradient(
+                                  colors: [Colors.green, Colors.greenAccent],
+                                ),
+                                duration: Duration(seconds: 1),
+                              )..show(context);
+
+                              setState(() {
+                                totalPedido += restaurantItems[i].price;
+                              });
+                            },
+                          ),
+                        ),
+                        itemCount: restaurantInfo.length,
+                      );
+                    } else {
+                      return Container(
+                        child: Center(
+                          child:
+                              Text('Erro ao carregar cardápio do restaurante!'),
+                        ),
+                      );
+                    }
+                  },
                 ),
               ],
             ),
@@ -186,37 +249,5 @@ class _RestaurantPageState extends State<RestaurantPage> {
         ],
       ),
     );
-  }
-
-  List<Widget> _getCategoryItems(List<CategoryItem> items) {
-    return items
-        .map((categoryItem) => ListTile(
-              title: Text(categoryItem.name),
-              leading: IconButton(
-                  icon: Icon(Icons.add_shopping_cart),
-                  onPressed: () {
-                    Flushbar(
-                      message: "Item adicionado ao Pedido",
-                      icon: Icon(
-                        Icons.check,
-                        size: 28.0,
-                        color: Colors.green,
-                      ),
-                      backgroundGradient: LinearGradient(
-                        colors: [Colors.green, Colors.greenAccent],
-                      ),
-                      duration: Duration(seconds: 1),
-                    )..show(context);
-
-                    setState(() {
-                      totalPedido += categoryItem.price;
-                    });
-                  }),
-              trailing: Text(
-                'R\$ ${categoryItem.price.toStringAsFixed(2)}',
-                style: TextStyle(color: Colors.green),
-              ),
-            ))
-        .toList();
   }
 }

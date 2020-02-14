@@ -2,8 +2,12 @@ import 'package:animated_card/animated_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_com_fome/core/API.dart';
+import 'package:to_com_fome/core/dio_builder.dart';
 import 'package:to_com_fome/model/restaurant.dart';
 import 'package:to_com_fome/pages/home/bloc/bloc.dart';
+import 'package:to_com_fome/pages/restaurant/bloc/bloc.dart';
+import 'package:to_com_fome/pages/restaurant/bloc/restaurant_picked_bloc.dart';
+import 'package:to_com_fome/pages/restaurant/repository/restaurant_picked_repository.dart';
 import 'package:to_com_fome/pages/restaurant/restaurant_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -50,14 +54,25 @@ class HomePage extends StatelessWidget {
                             : ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemBuilder: (_, i) => Hero(
-                                    tag: restaurants[i].restaurantId.toString(),
-                                    child: GestureDetector(
-                                        onTap: () => Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (_) => RestaurantPage(
-                                                    restaurants[i]))),
-                                        child:
-                                            RestaurantWidget(restaurants[i]))),
+                                  tag:
+                                      '${category.name}-${restaurants[i].restaurantId.toString()}',
+                                  child: GestureDetector(
+                                    onTap: () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            BlocProvider<RestaurantPickedBloc>(
+                                          create: (_) => RestaurantPickedBloc(
+                                            restaurants[i],
+                                            RestaurantPickedRepository(
+                                                client: DioBuilder.getDio()),
+                                          )..add(LoadItemsEvent()),
+                                          child: RestaurantPage(),
+                                        ),
+                                      ),
+                                    ),
+                                    child: RestaurantWidget(restaurants[i]),
+                                  ),
+                                ),
                                 itemCount: restaurants.length,
                               ),
                       )
