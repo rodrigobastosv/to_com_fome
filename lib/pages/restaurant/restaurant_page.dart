@@ -2,9 +2,8 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_com_fome/core/API.dart';
+import 'package:to_com_fome/pages/home/bloc/bloc.dart';
 import 'package:to_com_fome/pages/restaurant/bloc/bloc.dart';
-
-import 'mock_restaurant_page.dart';
 
 class RestaurantPage extends StatefulWidget {
   @override
@@ -14,17 +13,20 @@ class RestaurantPage extends StatefulWidget {
 class _RestaurantPageState extends State<RestaurantPage> {
   double totalPedido;
   RestaurantPickedBloc restaurantPickedBloc;
+  HomeBloc homeBloc;
 
   @override
   void initState() {
     totalPedido = 0.0;
-    restaurantPickedBloc = BlocProvider.of<RestaurantPickedBloc>(context);
+    restaurantPickedBloc = context.bloc<RestaurantPickedBloc>();
+    homeBloc = context.bloc<HomeBloc>();
     super.initState();
   }
 
   @override
   void dispose() {
     restaurantPickedBloc.close();
+    homeBloc.close();
     super.dispose();
   }
 
@@ -61,30 +63,40 @@ class _RestaurantPageState extends State<RestaurantPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    SizedBox(
-                      height: 8,
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: 12,
+                      ),
                     ),
-                    Text(
-                      restaurantPickedBloc.restaurantPicked.restaurante,
-                      style: TextStyle(
-                          fontSize: 28, color: Theme.of(context).primaryColor),
+                    Expanded(
+                      flex: 8,
+                      child: Text(
+                        restaurantPickedBloc.restaurantPicked.restaurante,
+                        style: TextStyle(
+                            fontSize: 28,
+                            color: Theme.of(context).primaryColor),
+                      ),
                     ),
-                    Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                        ),
-                        SizedBox(width: 12),
-                        Text(
-                          restaurantPickedBloc.restaurantPicked.stars
-                              .toString(),
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context).primaryColor,
+                    Expanded(
+                      flex: 2,
+                      child: Row(
+                        children: <Widget>[
+                          Icon(
+                            Icons.star,
+                            color: Colors.yellow,
                           ),
-                        )
-                      ],
+                          SizedBox(width: 12),
+                          Text(
+                            restaurantPickedBloc.restaurantPicked.stars
+                                .toString(),
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),
@@ -142,23 +154,65 @@ class _RestaurantPageState extends State<RestaurantPage> {
                         ),
                       ],
                     ),
-                    Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.credit_card,
-                                color: Theme.of(context).primaryColor),
-                            Icon(Icons.monetization_on,
-                                color: Theme.of(context).primaryColor),
-                          ],
-                        ),
-                        Text(
-                          'pagamento',
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 12),
-                        ),
-                      ],
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) {
+                            return SimpleDialog(
+                              children: <Widget>[
+                                BlocBuilder(
+                                  bloc: homeBloc,
+                                  builder: (_, state) => Container(
+                                    child: ListView.separated(
+                                      itemBuilder: (_, i) => ListTile(
+                                        key: ValueKey(
+                                            homeBloc.paymentTypes[i].id),
+                                        onTap: () {
+                                          homeBloc.add(ChoosePaymentTypeEvent(
+                                              homeBloc.paymentTypes[i]));
+                                        },
+                                        title: Text(
+                                          homeBloc.paymentTypes[i].name,
+                                          style: TextStyle(
+                                              color: homeBloc.paymentTypes[i] ==
+                                                      homeBloc
+                                                          .choosedPaymentType
+                                                  ? Colors.blue
+                                                  : Colors.black),
+                                        ),
+                                      ),
+                                      separatorBuilder: (_, i) => Divider(),
+                                      itemCount:
+                                          homeBloc.paymentTypes?.length ?? 0,
+                                    ),
+                                    height: 300,
+                                    width: 150,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Icon(Icons.credit_card,
+                                  color: Theme.of(context).primaryColor),
+                              Icon(Icons.monetization_on,
+                                  color: Theme.of(context).primaryColor),
+                            ],
+                          ),
+                          Text(
+                            'pagamento',
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontSize: 12),
+                          ),
+                        ],
+                      ),
                     ),
                     Column(
                       children: <Widget>[
@@ -231,7 +285,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             },
                           ),
                         ),
-                        itemCount: restaurantInfo.length,
+                        itemCount: restaurantItems.length,
                       );
                     } else {
                       return Container(

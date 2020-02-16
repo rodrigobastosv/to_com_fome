@@ -4,6 +4,8 @@ const CATEGORY_IMAGE =
 
 const CATEGORIES = 'categories/';
 const ITENS = 'itens/';
+const CADASTRO = 'cadastro/';
+const PAGAMENTO = 'pagamento/';
 const BASE_CATEGORY_IMAGE_URL =
     'http://restaurante.claudialage.com.br/uploads/category';
 const BASE_RESTAURANT_IMAGE_URL =

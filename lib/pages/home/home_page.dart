@@ -6,7 +6,6 @@ import 'package:to_com_fome/core/dio_builder.dart';
 import 'package:to_com_fome/model/restaurant.dart';
 import 'package:to_com_fome/pages/home/bloc/bloc.dart';
 import 'package:to_com_fome/pages/restaurant/bloc/bloc.dart';
-import 'package:to_com_fome/pages/restaurant/bloc/restaurant_picked_bloc.dart';
 import 'package:to_com_fome/pages/restaurant/repository/restaurant_picked_repository.dart';
 import 'package:to_com_fome/pages/restaurant/restaurant_page.dart';
 
@@ -59,15 +58,26 @@ class HomePage extends StatelessWidget {
                                   child: GestureDetector(
                                     onTap: () => Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (_) =>
-                                            BlocProvider<RestaurantPickedBloc>(
-                                          create: (_) => RestaurantPickedBloc(
-                                            restaurants[i],
-                                            RestaurantPickedRepository(
-                                                client: DioBuilder.getDio()),
-                                          )..add(LoadItemsEvent()),
-                                          child: RestaurantPage(),
-                                        ),
+                                        builder: (_) {
+                                          return MultiBlocProvider(
+                                            providers: [
+                                              BlocProvider<
+                                                  RestaurantPickedBloc>(
+                                                create: (_) =>
+                                                    RestaurantPickedBloc(
+                                                  restaurants[i],
+                                                  RestaurantPickedRepository(
+                                                      client:
+                                                          DioBuilder.getDio()),
+                                                )..add(LoadItemsEvent()),
+                                              ),
+                                              BlocProvider<HomeBloc>.value(
+                                                value: context.bloc<HomeBloc>(),
+                                              ),
+                                            ],
+                                            child: RestaurantPage(),
+                                          );
+                                        },
                                       ),
                                     ),
                                     child: RestaurantWidget(restaurants[i]),
