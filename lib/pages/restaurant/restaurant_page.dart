@@ -387,7 +387,7 @@ class OrderSummary extends StatelessWidget {
       child: ListView.separated(
         shrinkWrap: true,
         itemBuilder: (_, i) => ListTile(
-          leading: Text('${order[keys[i]] + 1} x'),
+          leading: Text('${order[keys[i]]} x'),
           title: Text(keys[i]),
         ),
         separatorBuilder: (_, i) => Divider(),
