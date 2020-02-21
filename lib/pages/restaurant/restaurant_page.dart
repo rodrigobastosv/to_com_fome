@@ -47,7 +47,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
               builder: (_) => AlertDialog(
                 title: Text('Teste'),
                 content: Container(
-                  height: 280,
+                  height: 320,
                   width: 200,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
