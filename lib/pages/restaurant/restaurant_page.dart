@@ -15,6 +15,8 @@ class _RestaurantPageState extends State<RestaurantPage> {
   RestaurantPickedBloc restaurantPickedBloc;
   HomeBloc homeBloc;
 
+  Map<String, int> order = {};
+
   @override
   void initState() {
     totalPedido = 0.0;
@@ -38,9 +40,69 @@ class _RestaurantPageState extends State<RestaurantPage> {
         width: double.infinity,
         alignment: Alignment.center,
         color: Theme.of(context).primaryColor.withOpacity(0.7),
-        child: Text(
-          'Total do Pedido: R\$ ${(totalPedido).toStringAsFixed(2)}',
-          style: TextStyle(fontSize: 18, color: Colors.white),
+        child: GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: Text('Teste'),
+                content: Container(
+                  height: 280,
+                  width: 200,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SingleChildScrollView(
+                        child: Container(
+                          height: 200,
+                          child: OrderSummary(order),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Total: ${(totalPedido).toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      RaisedButton(
+                        onPressed: () {
+                          setState(() {
+                            order = {};
+                            totalPedido = 0.0;
+                          });
+                          Navigator.of(context).pop();
+
+                          Flushbar(
+                            message: "Pedido Adicionado com Sucesso",
+                            icon: Icon(
+                              Icons.check,
+                              size: 28.0,
+                              color: Colors.green,
+                            ),
+                            backgroundGradient: LinearGradient(
+                              colors: [Colors.green, Colors.greenAccent],
+                            ),
+                            duration: Duration(seconds: 1),
+                          )..show(context);
+                        },
+                        child: Text(
+                          'Confirmar Pedido',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                        color: Theme.of(context).primaryColor.withOpacity(0.7),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+          child: Text(
+            'Total do Pedido: R\$ ${(totalPedido).toStringAsFixed(2)}',
+            style: TextStyle(fontSize: 18, color: Colors.white),
+          ),
         ),
       ),
       body: CustomScrollView(
@@ -266,6 +328,12 @@ class _RestaurantPageState extends State<RestaurantPage> {
                           trailing: IconButton(
                             icon: Icon(Icons.add_shopping_cart),
                             onPressed: () {
+                              final name = restaurantItems[i].name;
+                              if (order.containsKey(name)) {
+                                order.update(name, (_) => order[name] + 1);
+                              } else {
+                                order.putIfAbsent(name, () => 1);
+                              }
                               Flushbar(
                                 message: "Item adicionado ao Pedido",
                                 icon: Icon(
@@ -301,6 +369,29 @@ class _RestaurantPageState extends State<RestaurantPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class OrderSummary extends StatelessWidget {
+  OrderSummary(this.order);
+
+  final Map<String, int> order;
+
+  List<String> get keys => order.keys.toList();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ListView.separated(
+        shrinkWrap: true,
+        itemBuilder: (_, i) => ListTile(
+          leading: Text('${order[keys[i]] + 1} x'),
+          title: Text(keys[i]),
+        ),
+        separatorBuilder: (_, i) => Divider(),
+        itemCount: order.length,
       ),
     );
   }
