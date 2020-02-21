@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_com_fome/core/API.dart';
 import 'package:to_com_fome/pages/home/bloc/bloc.dart';
 import 'package:to_com_fome/pages/restaurant/bloc/bloc.dart';
+import 'package:to_com_fome/pages/restaurant/order_summary_page.dart';
 
 class RestaurantPage extends StatefulWidget {
   @override
@@ -41,63 +42,33 @@ class _RestaurantPageState extends State<RestaurantPage> {
         alignment: Alignment.center,
         color: Theme.of(context).primaryColor.withOpacity(0.7),
         child: GestureDetector(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (_) => AlertDialog(
-                title: Text('Teste'),
-                content: Container(
-                  height: 360,
-                  width: 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      SingleChildScrollView(
-                        child: Container(
-                          height: 200,
-                          child: OrderSummary(order),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Total: ${(totalPedido).toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                      RaisedButton(
-                        onPressed: () {
-                          setState(() {
-                            order = {};
-                            totalPedido = 0.0;
-                          });
-                          Navigator.of(context).pop();
-
-                          Flushbar(
-                            message: "Pedido Adicionado com Sucesso",
-                            icon: Icon(
-                              Icons.check,
-                              size: 28.0,
-                              color: Colors.green,
-                            ),
-                            backgroundGradient: LinearGradient(
-                              colors: [Colors.green, Colors.greenAccent],
-                            ),
-                            duration: Duration(seconds: 1),
-                          )..show(context);
-                        },
-                        child: Text(
-                          'Confirmar Pedido',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                        color: Theme.of(context).primaryColor.withOpacity(0.7),
-                      ),
-                    ],
-                  ),
-                ),
+          onTap: () async {
+            final finalized = await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) =>
+                    OrderSummaryPage(totalPedido: totalPedido, order: order),
               ),
             );
+            if (finalized != null && finalized) {
+              setState(() {
+                order = {};
+                totalPedido = 0.0;
+              });
+              Navigator.of(context).pop();
+
+              Flushbar(
+                message: "Pedido Adicionado com Sucesso",
+                icon: Icon(
+                  Icons.check,
+                  size: 28.0,
+                  color: Colors.green,
+                ),
+                backgroundGradient: LinearGradient(
+                  colors: [Colors.green, Colors.greenAccent],
+                ),
+                duration: Duration(seconds: 1),
+              )..show(context);
+            }
           },
           child: Text(
             'Total do Pedido: R\$ ${(totalPedido).toStringAsFixed(2)}',
@@ -369,29 +340,6 @@ class _RestaurantPageState extends State<RestaurantPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class OrderSummary extends StatelessWidget {
-  OrderSummary(this.order);
-
-  final Map<String, int> order;
-
-  List<String> get keys => order.keys.toList();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: ListView.separated(
-        shrinkWrap: true,
-        itemBuilder: (_, i) => ListTile(
-          leading: Text('${order[keys[i]]} x'),
-          title: Text(keys[i]),
-        ),
-        separatorBuilder: (_, i) => Divider(),
-        itemCount: order.length,
       ),
     );
   }
