@@ -26,66 +26,42 @@ class OrderSummaryPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Center(
-                child: Text(
-                  'Itens do Pedido',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+              OrderItemsSummary(order),
+              Divider(height: 10),
+              ListTile(
+                leading: Text(
+                  'Tem cupom?',
+                  style: TextStyle(fontSize: 18),
+                ),
+                trailing: Text(
+                  'add',
+                  style: TextStyle(color: Colors.red),
                 ),
               ),
-              SizedBox(height: 6),
-              SingleChildScrollView(
-                child: Card(
-                  child: Container(
-                    height: order.length < 3 ? 200 : order.length * 50.0,
-                    child: OrderItemsSummary(order),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    leading: Icon(Icons.money_off),
-                    title: Text('Cupom'),
-                    subtitle: Text('Bloqueado'),
-                    trailing: Text(
-                      'Ver',
-                      style: TextStyle(color: Colors.red),
+              Divider(height: 20),
+              Column(
+                children: <Widget>[
+                  Text(
+                    'Observação',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
                   ),
-                ),
-              ),
-              SizedBox(height: 10),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'Observação',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                      SizedBox(height: 6),
-                      TextField(
-                        maxLines: 2,
-                        minLines: 2,
-                        maxLength: 180,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Ex: tirar molho, sem picles, etc...'),
-                      ),
-                    ],
+                  SizedBox(height: 6),
+                  TextField(
+                    maxLines: 2,
+                    minLines: 2,
+                    maxLength: 180,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Ex: tirar molho, sem picles, etc...'),
                   ),
-                ),
+                ],
               ),
-              SizedBox(height: 10),
+              Divider(
+                height: 60,
+              ),
               Column(
                 children: <Widget>[
                   Row(
