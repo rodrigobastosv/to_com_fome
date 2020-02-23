@@ -19,3 +19,9 @@ class ItemsErrorState extends RestaurantPickedState {
 
   final String errorMessage;
 }
+
+class ItemAddedToOrderState extends RestaurantPickedState {
+  ItemAddedToOrderState(this.items);
+
+  final List<RestaurantItem> items;
+}

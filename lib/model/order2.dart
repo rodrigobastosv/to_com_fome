@@ -1,7 +1,7 @@
 import 'order_item.dart';
 
-class Order {
-  Order({this.restaurantName, this.orderDate, this.totalValue, this.items});
+class Order2 {
+  Order2({this.restaurantName, this.orderDate, this.totalValue, this.items});
 
   final String restaurantName;
   final String orderDate;

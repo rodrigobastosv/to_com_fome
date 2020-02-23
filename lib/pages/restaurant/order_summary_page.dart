@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:to_com_fome/model/order.dart';
+
+import 'bloc/restaurant_picked_bloc.dart';
 
 class OrderSummaryPage extends StatelessWidget {
-  OrderSummaryPage({this.order, this.totalPedido});
-
-  final Map<String, int> order;
-  final double totalPedido;
-
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<RestaurantPickedBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Resumo do Pedido'),
         centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            icon: Icon(Icons.check_circle),
-          )
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -26,7 +20,7 @@ class OrderSummaryPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              OrderItemsSummary(order),
+              OrderItemsSummary(bloc.order),
               Divider(height: 10),
               ListTile(
                 leading: Text(
@@ -74,7 +68,7 @@ class OrderSummaryPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'R\$ ${(totalPedido).toStringAsFixed(2)}',
+                        'R\$ ${(bloc.order.totalValue).toStringAsFixed(2)}',
                         style: TextStyle(
                           fontSize: 14,
                         ),
@@ -107,18 +101,34 @@ class OrderSummaryPage extends StatelessWidget {
                         'Total:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontSize: 22,
                         ),
                       ),
                       Text(
-                        'R\$ ${(totalPedido + 3.0).toStringAsFixed(2)}',
+                        'R\$ ${(bloc.order.totalValue + 3.0).toStringAsFixed(2)}',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 28,
                         ),
                       ),
                     ],
                   ),
+                  SizedBox(height: 12),
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    padding: EdgeInsets.symmetric(horizontal: 38, vertical: 12),
+                    color: Theme.of(context).primaryColor,
+                    child: Text(
+                      'ACABEI',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                  )
                 ],
               ),
             ],
@@ -132,9 +142,7 @@ class OrderSummaryPage extends StatelessWidget {
 class OrderItemsSummary extends StatelessWidget {
   OrderItemsSummary(this.order);
 
-  final Map<String, int> order;
-
-  List<String> get keys => order.keys.toList();
+  final Order order;
 
   @override
   Widget build(BuildContext context) {
@@ -142,11 +150,29 @@ class OrderItemsSummary extends StatelessWidget {
       child: ListView.separated(
         shrinkWrap: true,
         itemBuilder: (_, i) => ListTile(
-          leading: Text('${order[keys[i]]} x'),
-          title: Text(keys[i]),
+          leading: Text('${order.items[i].qtd} x'),
+          title: Text(order.items[i].name),
+          trailing: Text('R\$ ${order.items[i].value.toStringAsFixed(2)}'),
+          subtitle: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text('subtotal: '),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  (order.items[i].value * order.items[i].qtd)
+                      .toStringAsFixed(2),
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 18),
+                ),
+              ),
+            ],
+          ),
         ),
         separatorBuilder: (_, i) => Divider(),
-        itemCount: order.length,
+        itemCount: order.items.length,
       ),
     );
   }

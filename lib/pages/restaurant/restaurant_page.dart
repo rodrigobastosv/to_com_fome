@@ -2,8 +2,10 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_com_fome/core/API.dart';
+import 'package:to_com_fome/model/restaurant_item.dart';
 import 'package:to_com_fome/pages/home/bloc/bloc.dart';
 import 'package:to_com_fome/pages/restaurant/bloc/bloc.dart';
+import 'package:to_com_fome/pages/restaurant/item_picked_page.dart';
 import 'package:to_com_fome/pages/restaurant/order_summary_page.dart';
 
 class RestaurantPage extends StatefulWidget {
@@ -12,15 +14,11 @@ class RestaurantPage extends StatefulWidget {
 }
 
 class _RestaurantPageState extends State<RestaurantPage> {
-  double totalPedido;
   RestaurantPickedBloc restaurantPickedBloc;
   HomeBloc homeBloc;
 
-  Map<String, int> order = {};
-
   @override
   void initState() {
-    totalPedido = 0.0;
     restaurantPickedBloc = context.bloc<RestaurantPickedBloc>();
     homeBloc = context.bloc<HomeBloc>();
     super.initState();
@@ -45,15 +43,13 @@ class _RestaurantPageState extends State<RestaurantPage> {
           onTap: () async {
             final finalized = await Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) =>
-                    OrderSummaryPage(totalPedido: totalPedido, order: order),
+                builder: (_) => BlocProvider.value(
+                  value: restaurantPickedBloc,
+                  child: OrderSummaryPage(),
+                ),
               ),
             );
             if (finalized != null && finalized) {
-              setState(() {
-                order = {};
-                totalPedido = 0.0;
-              });
               Navigator.of(context).pop();
 
               Flushbar(
@@ -70,9 +66,14 @@ class _RestaurantPageState extends State<RestaurantPage> {
               )..show(context);
             }
           },
-          child: Text(
-            'Total do Pedido: R\$ ${(totalPedido).toStringAsFixed(2)}',
-            style: TextStyle(fontSize: 18, color: Colors.white),
+          child: BlocBuilder<RestaurantPickedBloc, RestaurantPickedState>(
+            bloc: restaurantPickedBloc,
+            builder: (_, state) {
+              return Text(
+                'Total do Pedido: R\$ ${(restaurantPickedBloc.order.totalValue).toStringAsFixed(2)}',
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              );
+            },
           ),
         ),
       ),
@@ -264,83 +265,91 @@ class _RestaurantPageState extends State<RestaurantPage> {
                 SizedBox(
                   height: 2,
                 ),
-                BlocBuilder<RestaurantPickedBloc, RestaurantPickedState>(
-                  builder: (_, state) {
-                    if (state is ItemsLoadingState) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          CircularProgressIndicator(),
-                          SizedBox(height: 14),
-                          Text('Carregando items do cardápio'),
-                        ],
-                      );
-                    } else if (state is ItemsLoadedState) {
-                      final restaurantItems = state.items;
-                      return ListView.builder(
-                        controller: ScrollController(),
-                        shrinkWrap: true,
-                        itemBuilder: (_, i) => ListTile(
-                          title: Row(
-                            children: <Widget>[
-                              Text(restaurantItems[i].name),
-                              Spacer(),
-                              Text(
-                                'R\$ ${restaurantItems[i].price.toStringAsFixed(2)}',
-                                style: TextStyle(color: Colors.green),
-                              ),
-                            ],
-                          ),
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                '$BASE_ITEM_IMAGE_URL/${restaurantItems[i].image}'),
-                          ),
-                          trailing: IconButton(
-                            icon: Icon(Icons.add_shopping_cart),
-                            onPressed: () {
-                              final name = restaurantItems[i].name;
-                              if (order.containsKey(name)) {
-                                order.update(name, (_) => order[name] + 1);
-                              } else {
-                                order.putIfAbsent(name, () => 1);
-                              }
-                              Flushbar(
-                                message: "Item adicionado ao Pedido",
-                                icon: Icon(
-                                  Icons.check,
-                                  size: 28.0,
-                                  color: Colors.green,
-                                ),
-                                backgroundGradient: LinearGradient(
-                                  colors: [Colors.green, Colors.greenAccent],
-                                ),
-                                duration: Duration(seconds: 1),
-                              )..show(context);
-
-                              setState(() {
-                                totalPedido += restaurantItems[i].price;
-                              });
-                            },
-                          ),
+                BlocListener<RestaurantPickedBloc, RestaurantPickedState>(
+                  listener: (_, state) {
+                    if (state is ItemAddedToOrderState) {
+                      Flushbar(
+                        message: "Item adicionado ao Pedido",
+                        icon: Icon(
+                          Icons.check,
+                          size: 28.0,
+                          color: Colors.green,
                         ),
-                        itemCount: restaurantItems.length,
-                      );
-                    } else {
-                      return Container(
-                        child: Center(
-                          child:
-                              Text('Erro ao carregar cardápio do restaurante!'),
+                        backgroundGradient: LinearGradient(
+                          colors: [Colors.green, Colors.greenAccent],
                         ),
-                      );
+                        duration: Duration(seconds: 1),
+                      )..show(context);
                     }
                   },
+                  child:
+                      BlocBuilder<RestaurantPickedBloc, RestaurantPickedState>(
+                    builder: (_, state) {
+                      if (state is ItemsLoadingState) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            CircularProgressIndicator(),
+                            SizedBox(height: 14),
+                            Text('Carregando items do cardápio'),
+                          ],
+                        );
+                      } else if (state is ItemsLoadedState) {
+                        final restaurantItems = state.items;
+                        return _getRestaurantItemsList(restaurantItems);
+                      } else if (state is ItemAddedToOrderState) {
+                        final restaurantItems = state.items;
+                        return _getRestaurantItemsList(restaurantItems);
+                      } else {
+                        return Container(
+                          child: Center(
+                            child: Text(
+                                'Erro ao carregar cardápio do restaurante!'),
+                          ),
+                        );
+                      }
+                    },
+                  ),
                 ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _getRestaurantItemsList(List<RestaurantItem> items) {
+    return ListView.builder(
+      controller: ScrollController(),
+      shrinkWrap: true,
+      itemBuilder: (_, i) => ListTile(
+        onTap: () {
+          Navigator.of(context).push((MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                  value: restaurantPickedBloc,
+                  child: ItemPickedPage(items[i])))));
+        },
+        title: Row(
+          children: <Widget>[
+            Text(items[i].name),
+            Spacer(),
+            Text(
+              'R\$ ${items[i].price.toStringAsFixed(2)}',
+              style: TextStyle(color: Colors.green),
+            ),
+          ],
+        ),
+        leading: Hero(
+          tag: '${items[i].name}',
+          child: CircleAvatar(
+            backgroundImage:
+                NetworkImage('$BASE_ITEM_IMAGE_URL/${items[i].image}'),
+          ),
+        ),
+      ),
+      itemCount: items.length,
     );
   }
 }
