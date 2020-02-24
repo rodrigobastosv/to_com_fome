@@ -34,8 +34,10 @@ class _RestaurantPageState extends State<RestaurantPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Container(
         height: 30,
+        margin: EdgeInsets.only(left: 40),
         width: double.infinity,
         alignment: Alignment.center,
         color: Theme.of(context).primaryColor.withOpacity(0.7),
@@ -70,7 +72,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
             bloc: restaurantPickedBloc,
             builder: (_, state) {
               return Text(
-                'Total do Pedido: R\$ ${(restaurantPickedBloc.order.totalValue).toStringAsFixed(2)}',
+                'Ver Pedido: R\$ ${(restaurantPickedBloc.order.totalValue).toStringAsFixed(2)}',
                 style: TextStyle(fontSize: 18, color: Colors.white),
               );
             },
