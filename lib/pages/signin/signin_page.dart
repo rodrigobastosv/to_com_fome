@@ -11,17 +11,7 @@ class SigninPage extends StatefulWidget {
 class _SigninPageState extends State<SigninPage> {
   @override
   Widget build(BuildContext context) {
-    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
-    double padding;
-    if (textScaleFactor == 1) {
-      padding = 60;
-    } else if (textScaleFactor == 1.1) {
-      padding = 40;
-    } else if (textScaleFactor == 1.2) {
-      padding = 30;
-    } else if (textScaleFactor == 1.3) {
-      padding = 20;
-    }
+    double padding = 20;
     return Scaffold(
       body: Container(
         child: Column(
