@@ -13,15 +13,16 @@ class HomeRepository {
   Future<List<CategoryRestaurant>> getCategoryRestaurant() async {
     try {
       final response = await client.get(
-        CATEGORIES,
+        '$ADMIN/$CATEGORIES',
         options: Options(
           method: 'GET',
           responseType: ResponseType.plain,
         ),
       );
       final decodedResponse = jsonDecode(response.data);
-      return List.generate(decodedResponse.length,
-          (i) => CategoryRestaurant.fromJson(decodedResponse[i]));
+      final list = decodedResponse['data'] as List;
+      return List.generate(
+          list.length, (i) => CategoryRestaurant.fromJson(list[i]));
     } catch (e) {
       print(e.toString());
       return null;
@@ -31,15 +32,15 @@ class HomeRepository {
   Future<List<PaymentType>> getPaymentTypes() async {
     try {
       final response = await client.get(
-        '$CADASTRO/$PAGAMENTO',
+        '$ADMIN/$FORMA_PAGAMENTOS',
         options: Options(
           method: 'GET',
           responseType: ResponseType.plain,
         ),
       );
       final decodedResponse = jsonDecode(response.data);
-      return List.generate(decodedResponse.length,
-          (i) => PaymentType.fromJson(decodedResponse[i]));
+      final list = decodedResponse['data'] as List;
+      return List.generate(list.length, (i) => PaymentType.fromJson(list[i]));
     } catch (e) {
       print(e.toString());
       return null;

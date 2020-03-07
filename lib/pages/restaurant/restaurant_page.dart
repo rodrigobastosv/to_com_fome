@@ -85,7 +85,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
             expandedHeight: 150.0,
             flexibleSpace: FlexibleSpaceBar(
               background: Image.network(
-                '$BASE_RESTAURANT_IMAGE_URL/${restaurantPickedBloc.restaurantPicked.logoRestaurante}',
+                '$BASE_RESTAURANT_IMAGE_URL/${restaurantPickedBloc.restaurantPicked.logoPath}/${restaurantPickedBloc.restaurantPicked.logo}',
                 fit: BoxFit.cover,
               ),
             ),
@@ -108,7 +108,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                     Expanded(
                       flex: 8,
                       child: Text(
-                        restaurantPickedBloc.restaurantPicked.restaurante,
+                        restaurantPickedBloc.restaurantPicked.name,
                         style: TextStyle(
                             fontSize: 28,
                             color: Theme.of(context).primaryColor),
@@ -124,8 +124,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                           ),
                           SizedBox(width: 12),
                           Text(
-                            restaurantPickedBloc.restaurantPicked.stars
-                                .toString(),
+                            '4',
                             style: TextStyle(
                               fontSize: 18,
                               color: Theme.of(context).primaryColor,
@@ -161,7 +160,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                     Column(
                       children: <Widget>[
                         Text(
-                          '40 - 60',
+                          restaurantPickedBloc.restaurantPicked.deliveryTime,
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 18),
@@ -177,7 +176,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                     Column(
                       children: <Widget>[
                         Text(
-                          'R\$ 10',
+                          'R\$ ${restaurantPickedBloc.restaurantPicked.valueMin}',
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 18),
@@ -299,6 +298,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                         );
                       } else if (state is ItemsLoadedState) {
                         final restaurantItems = state.items;
+                        print('- $restaurantItems -');
                         return _getRestaurantItemsList(restaurantItems);
                       } else if (state is ItemAddedToOrderState) {
                         final restaurantItems = state.items;
@@ -346,8 +346,8 @@ class _RestaurantPageState extends State<RestaurantPage> {
         leading: Hero(
           tag: '${items[i].name}',
           child: CircleAvatar(
-            backgroundImage:
-                NetworkImage('$BASE_ITEM_IMAGE_URL/${items[i].image}'),
+            backgroundImage: NetworkImage(
+                '$BASE_RESTAURANT_IMAGE_URL/uploads/item/${items[i].image}'),
           ),
         ),
       ),

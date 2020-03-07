@@ -53,8 +53,7 @@ class HomePage extends StatelessWidget {
                             : ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemBuilder: (_, i) => Hero(
-                                  tag:
-                                      '${category.name}-${restaurants[i].restaurantId.toString()}',
+                                  tag: '${category.name}-${restaurants[i].id}',
                                   child: GestureDetector(
                                     onTap: () => Navigator.of(context).push(
                                       MaterialPageRoute(
@@ -123,7 +122,7 @@ class RestaurantWidget extends StatelessWidget {
               height: 100,
               width: 200,
               child: Image.network(
-                '$BASE_RESTAURANT_IMAGE_URL/${restaurant.logoRestaurante}',
+                '$BASE_RESTAURANT_IMAGE_URL/${restaurant.logoPath}/${restaurant.logo}',
                 fit: BoxFit.cover,
               ),
             ),
@@ -135,7 +134,7 @@ class RestaurantWidget extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              restaurant.restaurante,
+              restaurant.name,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: mainColor, fontSize: 18),
             ),

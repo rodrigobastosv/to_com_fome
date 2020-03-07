@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:to_com_fome/core/API.dart';
 import 'package:to_com_fome/model/restaurant_item.dart';
 
 class RestaurantPickedRepository {
@@ -9,18 +8,19 @@ class RestaurantPickedRepository {
 
   final Dio client;
 
-  Future<List<RestaurantItem>> getItemsRestaurant(String restaurantId) async {
+  Future<List<RestaurantItem>> getItemsRestaurant(String restaurantSlug) async {
     try {
       final response = await client.get(
-        '$ITENS/$restaurantId',
+        'restaurante/$restaurantSlug/cardapios',
         options: Options(
           method: 'GET',
           responseType: ResponseType.plain,
         ),
       );
       final decodedResponse = jsonDecode(response.data);
-      return List.generate(decodedResponse.length,
-          (i) => RestaurantItem.fromJson(decodedResponse[i]));
+      final list = decodedResponse['data'] as List;
+      return List.generate(
+          list.length, (i) => RestaurantItem.fromJson(list[i]));
     } catch (e) {
       print(e.toString());
       return null;

@@ -31,7 +31,8 @@ class RestaurantPickedBloc
 
       try {
         itemsOnMenu =
-            await _repository.getItemsRestaurant(restaurantPicked.restaurantId);
+            await _repository.getItemsRestaurant(restaurantPicked.slug);
+        print(itemsOnMenu);
         yield ItemsLoadedState(itemsOnMenu);
       } catch (e) {
         print(e.toString());

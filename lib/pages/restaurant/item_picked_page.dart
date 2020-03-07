@@ -37,7 +37,7 @@ class _ItemPickedPageState extends State<ItemPickedPage> {
             Hero(
               tag: widget.item.name,
               child: Image.network(
-                '$BASE_ITEM_IMAGE_URL/${widget.item.image}',
+                '$BASE_RESTAURANT_IMAGE_URL/uploads/item/${widget.item.image}',
                 width: double.infinity,
                 height: 200,
                 fit: BoxFit.cover,

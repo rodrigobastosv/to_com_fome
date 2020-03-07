@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class PaymentType extends Equatable {
-  String id;
+  int id;
   String name;
   String slug;
   String createdAt;
