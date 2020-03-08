@@ -45,8 +45,11 @@ class _RestaurantPageState extends State<RestaurantPage> {
           onTap: () async {
             final finalized = await Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: restaurantPickedBloc,
+                builder: (_) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: restaurantPickedBloc),
+                    BlocProvider.value(value: homeBloc),
+                  ],
                   child: OrderSummaryPage(),
                 ),
               ),
@@ -298,7 +301,6 @@ class _RestaurantPageState extends State<RestaurantPage> {
                         );
                       } else if (state is ItemsLoadedState) {
                         final restaurantItems = state.items;
-                        print('- $restaurantItems -');
                         return _getRestaurantItemsList(restaurantItems);
                       } else if (state is ItemAddedToOrderState) {
                         final restaurantItems = state.items;
