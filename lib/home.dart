@@ -6,10 +6,13 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:to_com_fome/core/dio_builder.dart';
 import 'package:to_com_fome/pages/home/bloc/bloc.dart';
 import 'package:to_com_fome/pages/home/repository/home_repository.dart';
+import 'package:to_com_fome/pages/sales/bloc/bloc.dart';
 
 import 'pages/favorite/favorite_page.dart';
 import 'pages/home/home_page.dart';
 import 'pages/orders/orders_page.dart';
+import 'pages/sales/bloc/sales_bloc.dart';
+import 'pages/sales/repository/sales_repository.dart';
 import 'pages/sales/sales_page.dart';
 
 class Home extends StatefulWidget {
@@ -70,7 +73,12 @@ class _HomeState extends State<Home> {
               ..add(LoadCategoriesEvent()),
             child: HomePage(),
           ),
-          SalesPage(),
+          BlocProvider<SalesBloc>(
+            create: (_) =>
+                SalesBloc(SalesRepository(client: DioBuilder.getDio()))
+                  ..add(LoadItems()),
+            child: SalesPage(),
+          ),
           FavoritePage(),
           OrdersPage(),
         ],

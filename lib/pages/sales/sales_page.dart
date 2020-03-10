@@ -1,77 +1,112 @@
 import 'package:animated_card/animated_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:to_com_fome/core/API.dart';
 
-import 'mock_sales_page.dart';
+import 'bloc/sales_bloc.dart';
+import 'bloc/sales_state.dart';
 
 class SalesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemBuilder: (_, i) => AnimatedCard(
-          child: Card(
-            semanticContainer: true,
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return BlocBuilder<SalesBloc, SalesState>(
+      builder: (_, state) {
+        if (state is LoadingSales || state is InitialSalesState) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          final items = (state as SalesItemsLoaded).items;
+          return ListView.builder(
+            itemBuilder: (_, i) {
+              final val = items[i].restaurantItem.price -
+                  double.parse(items[i].priceOff);
+              final percent = val / items[i].restaurantItem.price;
+              final discount = percent * 100;
+              return AnimatedCard(
+                child: Card(
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: Column(
                     children: <Widget>[
-                      Text(sales[i].name, style: TextStyle(fontSize: 18),),
-                      Container(
-                        height: 32,
-                        child: Image.network(
-                          sales[i].logoAssetName,
-                          fit: BoxFit.fill,
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Text(
+                              items[i].restaurantItem.description,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Container(
+                              height: 32,
+                              child: Text('LOGO'),
+                            ),
+                          ],
                         ),
+                      ),
+                      Stack(
+                        children: <Widget>[
+                          Image.network(
+                            '$BASE_RESTAURANT_IMAGE_URL/${items[i].restaurantItem.imagePath}',
+                            fit: BoxFit.fill,
+                          ),
+                          Positioned(
+                            left: 10,
+                            child: Chip(
+                              backgroundColor: Colors.redAccent,
+                              label: Text(
+                                '${discount.toStringAsFixed(0)}% OFF',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              'Preço: ',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              'De R\$ ${items[i].restaurantItem.price.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  decoration: TextDecoration.lineThrough),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              'por R\$ ${double.parse(items[i].priceOff).toStringAsFixed(2)}',
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  elevation: 5,
+                  margin: EdgeInsets.all(10),
                 ),
-                Stack(
-                  children: <Widget>[
-                    Image.network(
-                      sales[i].saleAssetImage,
-                      fit: BoxFit.fill,
-                    ),
-                    Positioned(
-                      left: 10,
-                      child: Chip(
-                        backgroundColor: Colors.redAccent,
-                        label: Text('${sales[i].discount}% OFF', style: TextStyle(
-                          color: Colors.white
-                        ),),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text('Preço: ', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text('De R\$ ${sales[i].originalPrice}', style: TextStyle(fontSize: 18, decoration: TextDecoration.lineThrough)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text('por R\$ ${sales[i].priceWithDiscount}', style: TextStyle(fontSize: 18, )),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            elevation: 5,
-            margin: EdgeInsets.all(10),
-          ),
-        ),
-        itemCount: sales.length,
+              );
+            },
+            itemCount: items.length,
+          );
+        }
+      },
     );
   }
 }

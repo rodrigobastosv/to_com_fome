@@ -12,7 +12,6 @@ class OrderSummaryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<RestaurantPickedBloc>(context);
     final homeBloc = BlocProvider.of<HomeBloc>(context);
-    print(homeBloc);
     return Scaffold(
       appBar: AppBar(
         title: Text('Resumo do Pedido'),
