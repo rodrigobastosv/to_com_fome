@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:to_com_fome/pages/signup/bloc/bloc.dart';
+import 'package:to_com_fome/pages/signup/signup_page.dart';
 
 import '../../home.dart';
 
@@ -57,7 +60,16 @@ class _SigninPageState extends State<SigninPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: padding),
               child: MaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (_) => BlocProvider<SignupBloc>(
+                        create: (_) => SignupBloc(),
+                        child: SignupPage(),
+                      ),
+                    ),
+                  );
+                },
                 shape: Border.all(color: Theme.of(context).primaryColor),
                 child: Text(
                   'CADASTRE-SE',
