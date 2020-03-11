@@ -11,7 +11,7 @@ class SalesRepository {
   Future<List<RestaurantItemOff>> getItemsOnSale() async {
     try {
       final response = await client.get(
-        'restaurante/plau-pasrk-pitzaria/promocoes',
+        '/admin/promocoes',
         options: Options(
           method: 'GET',
           responseType: ResponseType.plain,
