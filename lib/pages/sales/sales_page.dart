@@ -17,8 +17,6 @@ class SalesPage extends StatelessWidget {
           );
         } else {
           final items = (state as SalesItemsLoaded).items;
-          print(BASE_RESTAURANT_IMAGE_URL);
-          print(items[0].restaurantItem);
           return ListView.builder(
             itemBuilder: (_, i) {
               final val = items[i].restaurantItem.price -

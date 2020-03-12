@@ -42,4 +42,9 @@ class Cupom extends Equatable {
 
   @override
   List<Object> get props => [code];
+
+  @override
+  String toString() {
+    return 'Cupom{id: $id, code: $code, value: $value, start: $start, end: $end, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
 }

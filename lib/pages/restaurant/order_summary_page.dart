@@ -22,6 +22,8 @@ class OrderSummaryPage extends StatelessWidget {
           bloc: homeBloc,
           listener: (_, state) {
             if (state is CupomChoosedState) {
+              Navigator.of(context).pop();
+
               Flushbar(
                 message: "Cupom adicionado ao Pedido",
                 icon: Icon(
@@ -36,7 +38,6 @@ class OrderSummaryPage extends StatelessWidget {
               )..show(context);
             }
             if (state is CupomNotFoundState) {
-              print('aaaaa');
               Flushbar(
                 message: "Cupom ${state.cupomCode} não encontrado",
                 icon: Icon(
@@ -113,12 +114,10 @@ class OrderSummaryPage extends StatelessWidget {
                                         SizedBox(height: 8),
                                         RaisedButton(
                                           onPressed: () {
-                                            print('xxxxxxxx');
                                             homeBloc.add(
                                                 TentaAdicionarCupomEvent(
                                                     cupomTextEditingController
                                                         .text));
-                                            print('yyyyyyyy');
                                           },
                                           color: Theme.of(context).primaryColor,
                                           child: Text(

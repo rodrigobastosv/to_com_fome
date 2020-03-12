@@ -22,7 +22,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
-    print('llllll');
     if (event is LoadCategoriesEvent) {
       yield CategoriesLoadingState();
 
@@ -39,19 +38,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       choosedPaymentType = event.paymentType;
       yield PaymentTypeChoosedState(event.paymentType);
     }
-    print('cupom');
     if (event is TentaAdicionarCupomEvent) {
-      print('cupom2');
       final cupomCode = event.cupomCode;
-      final cupomFound = cupoms.firstWhere((cupom) => cupom.code == cupomCode);
-
-      print('a');
-      if (cupomFound != null) {
-        print('b');
-        choosedCupom = cupomFound;
-        yield CupomChoosedState(cupomFound);
+      int cupomIndex = cupoms.indexWhere((cupom) => cupom.code == cupomCode);
+      if (cupomIndex != -1) {
+        choosedCupom = cupoms[cupomIndex];
+        yield CupomChoosedState(cupoms[cupomIndex]);
       } else {
-        print('c');
         yield CupomNotFoundState(cupomCode);
       }
     }

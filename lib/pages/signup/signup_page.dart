@@ -14,6 +14,10 @@ class _SignupPageState extends State<SignupPage> {
   String email;
   String password;
   String adress;
+  String district;
+  String mobile;
+  String state;
+  String city;
 
   SignupBloc signupBloc;
 
@@ -95,29 +99,74 @@ class _SignupPageState extends State<SignupPage> {
                       onSaved: (endereco) => adress = endereco,
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'bairro',
+                        prefixIcon: Icon(Icons.add_location),
+                      ),
+                      validator: (bairro) =>
+                          bairro.isEmpty ? 'campo obrigatório' : null,
+                      onSaved: (bairro) => district = bairro,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'celular',
+                        prefixIcon: Icon(Icons.phone_android),
+                      ),
+                      validator: (celular) =>
+                          celular.isEmpty ? 'campo obrigatório' : null,
+                      onSaved: (celular) => mobile = celular,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'estado',
+                        prefixIcon: Icon(Icons.map),
+                      ),
+                      validator: (estado) =>
+                          estado.isEmpty ? 'campo obrigatório' : null,
+                      onSaved: (estado) => state = estado,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'cidade',
+                        prefixIcon: Icon(Icons.location_city),
+                      ),
+                      validator: (cidade) =>
+                          cidade.isEmpty ? 'campo obrigatório' : null,
+                      onSaved: (cidade) => city = cidade,
+                    ),
+                  ),
                   SizedBox(height: 32),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: padding),
                     child: RaisedButton(
                       onPressed: () {
                         if (formKey.currentState.validate()) {
+                          formKey.currentState.save();
                           signupBloc.add(
                             SignupUser(
-                                name: name,
-                                email: email,
-                                password: password,
-                                adress: adress,
-                                district: 'Teste',
-                                mobile: '99999999',
-                                state: 'CE',
-                                city: 'Fortaleza'),
+                              name: name,
+                              email: email,
+                              password: password,
+                              adress: adress,
+                              district: district,
+                              mobile: mobile,
+                              state: state,
+                              city: city,
+                            ),
                           );
                         }
-                        /*Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => Home(),
-                          ),
-                        );*/
                       },
                       child: BlocBuilder(
                         bloc: signupBloc,
@@ -129,7 +178,10 @@ class _SignupPageState extends State<SignupPage> {
                             );
                           } else {
                             return Center(
-                              child: CircularProgressIndicator(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CircularProgressIndicator(),
+                              ),
                             );
                           }
                         },
