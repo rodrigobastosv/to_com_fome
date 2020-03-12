@@ -103,11 +103,14 @@ class _SignupPageState extends State<SignupPage> {
                         if (formKey.currentState.validate()) {
                           signupBloc.add(
                             SignupUser(
-                              name: name,
-                              email: email,
-                              password: password,
-                              adress: adress,
-                            ),
+                                name: name,
+                                email: email,
+                                password: password,
+                                adress: adress,
+                                district: 'Teste',
+                                mobile: '99999999',
+                                state: 'CE',
+                                city: 'Fortaleza'),
                           );
                         }
                         /*Navigator.of(context).pushReplacement(
@@ -116,9 +119,20 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                         );*/
                       },
-                      child: Text(
-                        'CADASTRAR',
-                        style: TextStyle(color: Colors.white),
+                      child: BlocBuilder(
+                        bloc: signupBloc,
+                        builder: (_, state) {
+                          if (state is InitialSignupState) {
+                            return Text(
+                              'CADASTRAR',
+                              style: TextStyle(color: Colors.white),
+                            );
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
                       ),
                       color: Theme.of(context).primaryColor,
                     ),

@@ -11,12 +11,12 @@ class Cupom extends Equatable {
 
   Cupom(
       {this.id,
-        this.code,
-        this.value,
-        this.start,
-        this.end,
-        this.createdAt,
-        this.updatedAt});
+      this.code,
+      this.value,
+      this.start,
+      this.end,
+      this.createdAt,
+      this.updatedAt});
 
   Cupom.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -41,5 +41,5 @@ class Cupom extends Equatable {
   }
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [code];
 }

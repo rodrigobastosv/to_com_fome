@@ -17,6 +17,8 @@ class SalesPage extends StatelessWidget {
           );
         } else {
           final items = (state as SalesItemsLoaded).items;
+          print(BASE_RESTAURANT_IMAGE_URL);
+          print(items[0].restaurantItem);
           return ListView.builder(
             itemBuilder: (_, i) {
               final val = items[i].restaurantItem.price -
@@ -34,13 +36,20 @@ class SalesPage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
-                            Text(
-                              items[i].restaurantItem.description,
-                              style: TextStyle(fontSize: 18),
+                            SizedBox(
+                              height: 50,
+                              width: 80,
+                              child: Image.network(
+                                '$BASE_RESTAURANT_IMAGE_URL/${items[i].restaurant.logoPath}/${items[i].restaurant.logo}',
+                                fit: BoxFit.fill,
+                              ),
                             ),
-                            Container(
-                              height: 32,
-                              child: Text('LOGO'),
+                            SizedBox(width: 18),
+                            Expanded(
+                              child: Text(
+                                items[i].restaurantItem.description,
+                                style: TextStyle(fontSize: 18),
+                              ),
                             ),
                           ],
                         ),
@@ -48,7 +57,7 @@ class SalesPage extends StatelessWidget {
                       Stack(
                         children: <Widget>[
                           Image.network(
-                            '$BASE_RESTAURANT_IMAGE_URL/${items[i].restaurantItem.imagePath}',
+                            '$BASE_RESTAURANT_IMAGE_URL/${items[i].restaurantItem.imagePath}/${items[i].restaurantItem.image}',
                             fit: BoxFit.fill,
                           ),
                           Positioned(

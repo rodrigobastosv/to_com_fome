@@ -13,6 +13,12 @@ class ChoosePaymentTypeEvent extends HomeEvent {
   final PaymentType paymentType;
 }
 
+class TentaAdicionarCupomEvent extends HomeEvent {
+  TentaAdicionarCupomEvent(this.cupomCode);
+
+  final String cupomCode;
+}
+
 class ChooseCupomEvent extends HomeEvent {
   ChooseCupomEvent(this.cupom);
 

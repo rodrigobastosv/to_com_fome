@@ -35,6 +35,18 @@ class OrderSummaryPage extends StatelessWidget {
                 duration: Duration(seconds: 1),
               )..show(context);
             }
+            if (state is CupomNotFoundState) {
+              print('aaaaa');
+              Flushbar(
+                message: "Cupom ${state.cupomCode} não encontrado",
+                icon: Icon(
+                  Icons.error_outline,
+                  size: 28.0,
+                  color: Colors.yellowAccent,
+                ),
+                duration: Duration(seconds: 1),
+              )..show(context);
+            }
           },
           child: BlocBuilder<HomeBloc, HomeState>(
             bloc: homeBloc,
@@ -81,63 +93,43 @@ class OrderSummaryPage extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (_) {
+                            final cupomTextEditingController =
+                                TextEditingController();
                             return SimpleDialog(
                               children: <Widget>[
                                 BlocBuilder(
                                   bloc: homeBloc,
-                                  builder: (_, state) => Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: <Widget>[
-                                      Container(
-                                        child: ListView.separated(
-                                          itemBuilder: (_, i) => ListTile(
-                                            key:
-                                                ValueKey(homeBloc.cupoms[i].id),
-                                            onTap: () {
-                                              homeBloc.add(ChooseCupomEvent(
-                                                  homeBloc.cupoms[i]));
-                                            },
-                                            title: Text(
-                                              homeBloc.cupoms[i].code,
-                                              style: TextStyle(
-                                                  color: homeBloc.cupoms[i] ==
-                                                          homeBloc.choosedCupom
-                                                      ? Colors.blue
-                                                      : Colors.black),
-                                            ),
-                                            subtitle: Text(
-                                                'R\$ ${double.parse(homeBloc.cupoms[i].value).toStringAsFixed(2)}'),
-                                          ),
-                                          separatorBuilder: (_, i) => Divider(),
-                                          itemCount:
-                                              homeBloc.cupoms?.length ?? 0,
+                                  builder: (_, state) => Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: <Widget>[
+                                        TextField(
+                                          controller:
+                                              cupomTextEditingController,
+                                          decoration: InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              hintText: 'Código do Cupom'),
                                         ),
-                                        height: 300,
-                                        width: 150,
-                                      ),
-                                      Container(
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              48, 0, 48, 8),
-                                          child: RaisedButton(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            child: Text(
-                                              'OK',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
+                                        SizedBox(height: 8),
+                                        RaisedButton(
+                                          onPressed: () {
+                                            print('xxxxxxxx');
+                                            homeBloc.add(
+                                                TentaAdicionarCupomEvent(
+                                                    cupomTextEditingController
+                                                        .text));
+                                            print('yyyyyyyy');
+                                          },
+                                          color: Theme.of(context).primaryColor,
+                                          child: Text(
+                                            'Adicionar Cupom',
+                                            style: TextStyle(
+                                              color: Colors.white,
                                             ),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
                                           ),
-                                        ),
-                                      )
-                                    ],
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -146,7 +138,7 @@ class OrderSummaryPage extends StatelessWidget {
                         );
                       },
                       child: Text(
-                        homeBloc.choosedCupom != null ? 'mudar' : 'add',
+                        'add',
                         style: TextStyle(color: Colors.red),
                       ),
                     ),

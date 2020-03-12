@@ -19,6 +19,7 @@ class SalesRepository {
       );
       final decodedResponse = jsonDecode(response.data);
       final list = decodedResponse['data'] as List;
+      print(list[0]);
       return List.generate(
           list.length, (i) => RestaurantItemOff.fromJson(list[i]));
     } catch (e) {

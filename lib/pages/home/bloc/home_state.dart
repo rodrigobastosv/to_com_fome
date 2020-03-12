@@ -22,6 +22,12 @@ class CupomChoosedState extends HomeState {
   final Cupom cupom;
 }
 
+class CupomNotFoundState extends HomeState {
+  CupomNotFoundState(this.cupomCode);
+
+  final String cupomCode;
+}
+
 class CategoriesLoadedState extends HomeState {
   CategoriesLoadedState(this.categories, this.paymentTypes);
 

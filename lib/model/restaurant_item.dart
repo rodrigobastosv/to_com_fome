@@ -53,4 +53,9 @@ class RestaurantItem {
     data['updated_at'] = this.updatedAt;
     return data;
   }
+
+  @override
+  String toString() {
+    return 'RestaurantItem{id: $id, restaurantId: $restaurantId, categoryId: $categoryId, name: $name, type: $type, description: $description, price: $price, image: $image, imagePath: $imagePath, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
 }

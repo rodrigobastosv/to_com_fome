@@ -24,6 +24,10 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
           email: event.email,
           password: event.password,
           adress: event.adress,
+          mobile: event.mobile,
+          district: event.district,
+          city: event.city,
+          state: event.state,
         );
         yield SignupSuccessState();
       } on Exception {
