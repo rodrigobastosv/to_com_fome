@@ -192,7 +192,55 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                         ),
                       ),
                     ),
-                    Divider(height: 20),
+                    Divider(height: 10),
+                    ListTile(
+                        title: Text('Meio de Pagamento'),
+                        subtitle: Text(homeBloc.choosedPaymentType != null
+                            ? homeBloc.choosedPaymentType.name
+                            : ''),
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) {
+                              return SimpleDialog(
+                                children: <Widget>[
+                                  BlocBuilder(
+                                    bloc: homeBloc,
+                                    builder: (_, state) => Container(
+                                      child: ListView.separated(
+                                        itemBuilder: (_, i) => ListTile(
+                                          key: ValueKey(
+                                              homeBloc.paymentTypes[i].id),
+                                          onTap: () {
+                                            Navigator.of(context).pop();
+                                            homeBloc.add(ChoosePaymentTypeEvent(
+                                                homeBloc.paymentTypes[i]));
+                                          },
+                                          title: Text(
+                                            homeBloc.paymentTypes[i].name,
+                                            style: TextStyle(
+                                                color: homeBloc
+                                                            .paymentTypes[i] ==
+                                                        homeBloc
+                                                            .choosedPaymentType
+                                                    ? Colors.blue
+                                                    : Colors.black),
+                                          ),
+                                        ),
+                                        separatorBuilder: (_, i) => Divider(),
+                                        itemCount:
+                                            homeBloc.paymentTypes?.length ?? 0,
+                                      ),
+                                      height: 300,
+                                      width: 150,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }),
+                    Divider(height: 10),
                     Form(
                       key: _formKey,
                       child: Column(
@@ -248,6 +296,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                       height: 30,
                     ),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -354,7 +403,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                             }
                           },
                           padding: EdgeInsets.symmetric(
-                              horizontal: 38, vertical: 12),
+                              horizontal: 18, vertical: 12),
                           color: Theme.of(context).primaryColor,
                           child: Text(
                             'ACABEI',
