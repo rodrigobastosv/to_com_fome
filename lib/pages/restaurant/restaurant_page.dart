@@ -11,6 +11,10 @@ import 'package:to_com_fome/pages/restaurant/item_picked_page.dart';
 import 'package:to_com_fome/pages/restaurant/order_summary_page.dart';
 
 class RestaurantPage extends StatefulWidget {
+  RestaurantPage({this.fromSales = false});
+
+  final bool fromSales;
+
   @override
   _RestaurantPageState createState() => _RestaurantPageState();
 }
@@ -23,6 +27,9 @@ class _RestaurantPageState extends State<RestaurantPage> {
   void initState() {
     restaurantPickedBloc = context.bloc<RestaurantPickedBloc>();
     homeBloc = context.bloc<HomeBloc>();
+    if (widget.fromSales) {
+      restaurantPickedBloc.add(LoadItemsEvent());
+    }
     super.initState();
   }
 
@@ -53,7 +60,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                     BlocProvider.value(value: homeBloc),
                   ],
                   child: Provider.value(
-                      value: Provider.of<UserModel>(context),
+                      value: Provider.of<UserModel>(context, listen: false),
                       child: OrderSummaryPage()),
                 ),
               ),
@@ -277,6 +284,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                   child:
                       BlocBuilder<RestaurantPickedBloc, RestaurantPickedState>(
                     builder: (_, state) {
+                      print(state);
                       if (state is ItemsLoadingState) {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,

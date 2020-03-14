@@ -37,3 +37,5 @@ class SaveOrder extends RestaurantPickedEvent {
   final String mobile;
   final PaymentType paymentType;
 }
+
+class TransientState extends RestaurantPickedEvent {}

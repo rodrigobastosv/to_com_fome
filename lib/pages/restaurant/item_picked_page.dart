@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:to_com_fome/core/API.dart';
 import 'package:to_com_fome/model/restaurant_item.dart';
+import 'package:to_com_fome/model/user_model.dart';
+import 'package:to_com_fome/pages/home/bloc/bloc.dart';
+import 'package:to_com_fome/pages/restaurant/order_summary_page.dart';
 
 import 'bloc/restaurant_picked_bloc.dart';
 import 'bloc/restaurant_picked_event.dart';
 
 class ItemPickedPage extends StatefulWidget {
-  ItemPickedPage(this.item);
+  ItemPickedPage(this.item, {this.fromSales = false});
 
   final RestaurantItem item;
+  final bool fromSales;
 
   @override
   _ItemPickedPageState createState() => _ItemPickedPageState();
@@ -123,7 +128,29 @@ class _ItemPickedPageState extends State<ItemPickedPage> {
                       BlocProvider.of<RestaurantPickedBloc>(context).add(
                           ItemAddedToOrder(
                               widget.item, pickedQtd, obsController.text));
-                      Navigator.of(context).pop();
+                      if (widget.fromSales) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => MultiBlocProvider(
+                              providers: [
+                                BlocProvider.value(
+                                  value: BlocProvider.of<RestaurantPickedBloc>(
+                                      context),
+                                ),
+                                BlocProvider.value(
+                                  value: BlocProvider.of<HomeBloc>(context),
+                                ),
+                              ],
+                              child: Provider.value(
+                                  value: Provider.of<UserModel>(context,
+                                      listen: false),
+                                  child: OrderSummaryPage()),
+                            ),
+                          ),
+                        );
+                      } else {
+                        Navigator.of(context).pop();
+                      }
                     }
                   : null,
               child: Row(

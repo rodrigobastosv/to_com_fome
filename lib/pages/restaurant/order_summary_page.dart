@@ -3,14 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:to_com_fome/core/dio_builder.dart';
 import 'package:to_com_fome/model/order.dart';
 import 'package:to_com_fome/model/user_model.dart';
 
 import '../../home.dart';
 import '../home/bloc/bloc.dart';
 import 'bloc/restaurant_picked_bloc.dart';
-import 'bloc/restaurant_picked_event.dart';
 import 'bloc/restaurant_picked_state.dart';
+import 'repository/restaurant_picked_repository.dart';
 
 class OrderSummaryPage extends StatefulWidget {
   @override
@@ -24,18 +25,24 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   String address;
   String district;
 
+  HomeBloc homeBloc;
+  RestaurantPickedBloc restaurantPickedBloc;
+  UserModel user;
+
+  RestaurantPickedRepository _repository;
+
   @override
   void initState() {
+    homeBloc = BlocProvider.of<HomeBloc>(context);
+    restaurantPickedBloc = BlocProvider.of<RestaurantPickedBloc>(context);
+    user = Provider.of<UserModel>(context, listen: false);
     _formKey = GlobalKey<FormState>();
+    _repository = RestaurantPickedRepository(client: DioBuilder.getDio());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bloc = BlocProvider.of<RestaurantPickedBloc>(context);
-    final homeBloc = BlocProvider.of<HomeBloc>(context);
-    final user = Provider.of<UserModel>(context);
-    print(homeBloc.cupoms[0]);
     return Scaffold(
       appBar: AppBar(
         title: Text('Resumo do Pedido'),
@@ -43,7 +50,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
       ),
       body: SingleChildScrollView(
         child: BlocListener<RestaurantPickedBloc, RestaurantPickedState>(
-          bloc: bloc,
+          bloc: restaurantPickedBloc,
           listener: (_, state) {
             if (state is OrderSavedState) {
               Flushbar(
@@ -59,7 +66,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                   (__) => Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (_) => Provider.value(
-                          value: Provider.of<UserModel>(context),
+                          value: Provider.of<UserModel>(context, listen: false),
                           child: Home()),
                     ),
                   ),
@@ -105,7 +112,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    OrderItemsSummary(bloc.order),
+                    OrderItemsSummary(restaurantPickedBloc.order),
                     Divider(height: 10),
                     ListTile(
                       leading: homeBloc.choosedCupom != null
@@ -309,7 +316,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                               ),
                             ),
                             Text(
-                              'R\$ ${(bloc.order.totalValue).toStringAsFixed(2)}',
+                              'R\$ ${(restaurantPickedBloc.order.totalValue).toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontSize: 14,
                               ),
@@ -364,7 +371,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                               ),
                             ),
                             Text(
-                              'R\$ ${(bloc.order.totalValue + 3.0 - double.parse(homeBloc.choosedCupom?.value ?? '0')).toStringAsFixed(2)}',
+                              'R\$ ${(restaurantPickedBloc.order.totalValue + 3.0 - double.parse(homeBloc.choosedCupom?.value ?? '0')).toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).primaryColor,
@@ -375,21 +382,42 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                         ),
                         SizedBox(height: 12),
                         RaisedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            print('a');
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
-
+                              print('b');
                               final choosedPaymentType =
                                   homeBloc.choosedPaymentType;
                               if (choosedPaymentType != null) {
-                                bloc.add(
-                                  SaveOrder(
-                                    address: address ?? user.address,
-                                    district: district ?? user.district,
-                                    mobile: mobile ?? user.mobile,
-                                    paymentType: choosedPaymentType,
-                                  ),
+                                await _repository.saveOrder(
+                                  order: restaurantPickedBloc.order,
+                                  address: address ?? user.address,
+                                  district: district ?? user.district,
+                                  mobile: mobile ?? user.mobile,
+                                  paymentType: choosedPaymentType,
                                 );
+                                Flushbar(
+                                  message: "Pedido salvo com sucesso",
+                                  icon: Icon(
+                                    Icons.check,
+                                    size: 28.0,
+                                    color: Colors.white,
+                                  ),
+                                  backgroundColor: Colors.green,
+                                  duration: Duration(seconds: 1),
+                                )..show(_).then(
+                                    (__) =>
+                                        Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (_) => Provider.value(
+                                            value: Provider.of<UserModel>(
+                                                context,
+                                                listen: false),
+                                            child: Home()),
+                                      ),
+                                    ),
+                                  );
                               } else {
                                 Flushbar(
                                   message: "Escolha um meio de pagamento",

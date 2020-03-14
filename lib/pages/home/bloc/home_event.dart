@@ -24,3 +24,5 @@ class ChooseCupomEvent extends HomeEvent {
 
   final Cupom cupom;
 }
+
+class Teste extends HomeEvent {}

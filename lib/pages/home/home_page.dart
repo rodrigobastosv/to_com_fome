@@ -16,7 +16,7 @@ import 'package:to_com_fome/pages/restaurant/restaurant_page.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final client = Provider.of<UserModel>(context);
+    final client = Provider.of<UserModel>(context, listen: false);
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (_, state) {
         if (state is CategoriesLoadingState) {

@@ -97,11 +97,21 @@ class _HomeState extends State<Home> {
             child: Provider.value(
                 value: Provider.of<UserModel>(context), child: HomePage()),
           ),
-          BlocProvider<SalesBloc>(
-            create: (_) =>
-                SalesBloc(SalesRepository(client: DioBuilder.getDio()))
-                  ..add(LoadItems()),
-            child: SalesPage(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider<SalesBloc>(
+                create: (_) =>
+                    SalesBloc(SalesRepository(client: DioBuilder.getDio()))
+                      ..add(LoadItems()),
+              ),
+              BlocProvider<HomeBloc>(
+                create: (_) =>
+                    HomeBloc(HomeRepository(client: DioBuilder.getDio()))
+                      ..add(LoadCategoriesEvent()),
+              ),
+            ],
+            child: Provider.value(
+                value: Provider.of<UserModel>(context), child: SalesPage()),
           ),
           FavoritePage(),
           OrdersPage(),
