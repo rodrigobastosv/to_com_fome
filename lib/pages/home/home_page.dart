@@ -121,7 +121,7 @@ class RestaurantWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final mainColor = Theme.of(context).primaryColor;
     return Container(
-      width: 260,
+      width: 160,
       child: Column(
         children: <Widget>[
           Card(
@@ -129,7 +129,7 @@ class RestaurantWidget extends StatelessWidget {
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Container(
               height: 100,
-              width: 200,
+              width: 100,
               child: FancyShimmerImage(
                 imageUrl:
                     '$BASE_RESTAURANT_IMAGE_URL/${restaurant.logoPath}/${restaurant.logo}',
@@ -138,7 +138,7 @@ class RestaurantWidget extends StatelessWidget {
                   children: <Widget>[
                     Icon(Ionicons.md_warning, color: Colors.red),
                     SizedBox(height: 6),
-                    Text('Erro ao carregar a imagem'),
+                    Text('Sem imagem'),
                   ],
                 ),
               ),

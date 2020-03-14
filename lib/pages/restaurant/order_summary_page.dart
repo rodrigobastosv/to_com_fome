@@ -35,7 +35,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     final bloc = BlocProvider.of<RestaurantPickedBloc>(context);
     final homeBloc = BlocProvider.of<HomeBloc>(context);
     final user = Provider.of<UserModel>(context);
-    print(user);
+    print(homeBloc.cupoms[0]);
     return Scaffold(
       appBar: AppBar(
         title: Text('Resumo do Pedido'),
@@ -87,7 +87,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
               }
               if (state is CupomNotFoundState) {
                 Flushbar(
-                  message: "Cupom ${state.cupomCode} não encontrado",
+                  message: "CUPOM INVÁLIDO",
                   icon: Icon(
                     Icons.error_outline,
                     size: 28.0,
@@ -163,6 +163,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                                           SizedBox(height: 8),
                                           RaisedButton(
                                             onPressed: () {
+                                              print('qqqqq');
                                               homeBloc.add(
                                                   TentaAdicionarCupomEvent(
                                                       cupomTextEditingController
