@@ -19,10 +19,19 @@ class ItemPickedPage extends StatefulWidget {
 class _ItemPickedPageState extends State<ItemPickedPage> {
   int pickedQtd;
 
+  TextEditingController obsController;
+
   @override
   void initState() {
     pickedQtd = 0;
+    obsController = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    obsController.dispose();
+    super.dispose();
   }
 
   @override
@@ -105,13 +114,15 @@ class _ItemPickedPageState extends State<ItemPickedPage> {
               padding: const EdgeInsets.all(18.0),
               child: TextField(
                 decoration: InputDecoration(hintText: 'Alguma observação?'),
+                controller: obsController,
               ),
             ),
             RaisedButton(
               onPressed: pickedQtd != 0
                   ? () {
-                      BlocProvider.of<RestaurantPickedBloc>(context)
-                          .add(ItemAddedToOrder(widget.item, pickedQtd));
+                      BlocProvider.of<RestaurantPickedBloc>(context).add(
+                          ItemAddedToOrder(
+                              widget.item, pickedQtd, obsController.text));
                       Navigator.of(context).pop();
                     }
                   : null,

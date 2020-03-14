@@ -15,10 +15,11 @@ class ItemPicked extends RestaurantPickedEvent {
 }
 
 class ItemAddedToOrder extends RestaurantPickedEvent {
-  ItemAddedToOrder(this.item, this.qtd);
+  ItemAddedToOrder(this.item, this.qtd, this.obs);
 
   final RestaurantItem item;
   final int qtd;
+  final String obs;
 }
 
 class ChangedItemQuantity extends RestaurantPickedEvent {

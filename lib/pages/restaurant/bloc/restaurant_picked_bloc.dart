@@ -47,6 +47,7 @@ class RestaurantPickedBloc
         name: restaurantItem.name,
         qtd: qtdPicked,
         value: restaurantItem.price,
+        obs: event.obs,
       );
       order.items.add(orderItem);
       yield ItemAddedToOrderState(itemsOnMenu);

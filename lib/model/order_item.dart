@@ -1,7 +1,8 @@
 class OrderItem {
-  OrderItem({this.name, this.qtd, this.value});
+  OrderItem({this.name, this.obs, this.qtd, this.value});
 
   final String name;
+  final String obs;
   final int qtd;
   final double value;
 

@@ -436,26 +436,50 @@ class OrderItemsSummary extends StatelessWidget {
     return Container(
       child: ListView.separated(
         shrinkWrap: true,
-        itemBuilder: (_, i) => ListTile(
-          leading: Text('${order.items[i].qtd} x'),
-          title: Text(order.items[i].name),
-          trailing: Text('R\$ ${order.items[i].value.toStringAsFixed(2)}'),
-          subtitle: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text('subtotal: '),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  'R\$ ${(order.items[i].value * order.items[i].qtd).toStringAsFixed(2)}',
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor, fontSize: 18),
+        itemBuilder: (_, i) => Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Expanded(
+                  flex: 10,
+                  child: Text(order.items[i].name),
                 ),
-              ),
-            ],
-          ),
+                Expanded(
+                  flex: 1,
+                  child: Text('${order.items[i].qtd} x'),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text('R\$ ${order.items[i].value.toStringAsFixed(2)}'),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text('subtotal: '),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    'R\$ ${(order.items[i].value * order.items[i].qtd).toStringAsFixed(2)}',
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor, fontSize: 18),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text('Observação: ${order.items[i].obs ?? 'Sem observação'}'),
+              ],
+            )
+          ],
         ),
         separatorBuilder: (_, i) => Divider(),
         itemCount: order.items.length,
