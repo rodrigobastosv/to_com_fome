@@ -17,14 +17,16 @@ class SignupRepository {
   }) async {
     try {
       var url =
-          'salvar-cliente?name=$name&email=$email&password=$password&password_confirmation=$password&address=$adress&mobile=$mobile&mobile=$mobile&state=$state&city=$city';
-      await client.post(
+          'salvar-cliente?name=$name&email=$email&password=$password&password_confirmation=$password&address=$adress&district=$district&mobile=$mobile&state=$state&city=$city';
+      final a = await client.post(
         url,
         options: Options(
           method: 'POST',
           responseType: ResponseType.plain,
         ),
       );
+      print(a);
+      print(a.data);
     } catch (e) {
       print(e.toString());
       return null;

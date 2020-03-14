@@ -1,9 +1,13 @@
 import 'package:animated_card/animated_card.dart';
+import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:to_com_fome/core/API.dart';
 import 'package:to_com_fome/core/dio_builder.dart';
 import 'package:to_com_fome/model/restaurant.dart';
+import 'package:to_com_fome/model/user_model.dart';
 import 'package:to_com_fome/pages/home/bloc/bloc.dart';
 import 'package:to_com_fome/pages/restaurant/bloc/bloc.dart';
 import 'package:to_com_fome/pages/restaurant/repository/restaurant_picked_repository.dart';
@@ -12,6 +16,7 @@ import 'package:to_com_fome/pages/restaurant/restaurant_page.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final client = Provider.of<UserModel>(context);
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (_, state) {
         if (state is CategoriesLoadingState) {
@@ -65,6 +70,7 @@ class HomePage extends StatelessWidget {
                                                 create: (_) =>
                                                     RestaurantPickedBloc(
                                                   restaurants[i],
+                                                  client,
                                                   RestaurantPickedRepository(
                                                       client:
                                                           DioBuilder.getDio()),
@@ -74,7 +80,10 @@ class HomePage extends StatelessWidget {
                                                 value: context.bloc<HomeBloc>(),
                                               ),
                                             ],
-                                            child: RestaurantPage(),
+                                            child: Provider.value(
+                                                value: Provider.of<UserModel>(
+                                                    context),
+                                                child: RestaurantPage()),
                                           );
                                         },
                                       ),
@@ -121,9 +130,17 @@ class RestaurantWidget extends StatelessWidget {
             child: Container(
               height: 100,
               width: 200,
-              child: Image.network(
-                '$BASE_RESTAURANT_IMAGE_URL/${restaurant.logoPath}/${restaurant.logo}',
-                fit: BoxFit.cover,
+              child: FancyShimmerImage(
+                imageUrl:
+                    '$BASE_RESTAURANT_IMAGE_URL/${restaurant.logoPath}/${restaurant.logo}',
+                errorWidget: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Ionicons.md_warning, color: Colors.red),
+                    SizedBox(height: 6),
+                    Text('Erro ao carregar a imagem'),
+                  ],
+                ),
               ),
             ),
             shape: RoundedRectangleBorder(

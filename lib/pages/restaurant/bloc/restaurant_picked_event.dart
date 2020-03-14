@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:to_com_fome/model/order_item.dart';
+import 'package:to_com_fome/model/payment_type_model.dart';
 import 'package:to_com_fome/model/restaurant_item.dart';
 
 @immutable
@@ -25,4 +26,13 @@ class ChangedItemQuantity extends RestaurantPickedEvent {
 
   final OrderItem orderItem;
   final int qtd;
+}
+
+class SaveOrder extends RestaurantPickedEvent {
+  SaveOrder({this.address, this.district, this.mobile, this.paymentType});
+
+  final String address;
+  final String district;
+  final String mobile;
+  final PaymentType paymentType;
 }

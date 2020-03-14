@@ -1,8 +1,10 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:to_com_fome/core/API.dart';
 import 'package:to_com_fome/model/restaurant_item.dart';
+import 'package:to_com_fome/model/user_model.dart';
 import 'package:to_com_fome/pages/home/bloc/bloc.dart';
 import 'package:to_com_fome/pages/restaurant/bloc/bloc.dart';
 import 'package:to_com_fome/pages/restaurant/item_picked_page.dart';
@@ -43,33 +45,19 @@ class _RestaurantPageState extends State<RestaurantPage> {
         color: Theme.of(context).primaryColor.withOpacity(0.7),
         child: GestureDetector(
           onTap: () async {
-            final finalized = await Navigator.of(context).push(
+            await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => MultiBlocProvider(
                   providers: [
                     BlocProvider.value(value: restaurantPickedBloc),
                     BlocProvider.value(value: homeBloc),
                   ],
-                  child: OrderSummaryPage(),
+                  child: Provider.value(
+                      value: Provider.of<UserModel>(context),
+                      child: OrderSummaryPage()),
                 ),
               ),
             );
-            if (finalized != null && finalized) {
-              Navigator.of(context).pop();
-
-              Flushbar(
-                message: "Pedido Adicionado com Sucesso",
-                icon: Icon(
-                  Icons.check,
-                  size: 28.0,
-                  color: Colors.green,
-                ),
-                backgroundGradient: LinearGradient(
-                  colors: [Colors.green, Colors.greenAccent],
-                ),
-                duration: Duration(seconds: 1),
-              )..show(context);
-            }
           },
           child: BlocBuilder<RestaurantPickedBloc, RestaurantPickedState>(
             bloc: restaurantPickedBloc,

@@ -1,19 +1,25 @@
 import 'package:bubbled_navigation_bar/bubbled_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_monitor/shared_preferences_monitor.dart';
 import 'package:to_com_fome/core/dio_builder.dart';
 import 'package:to_com_fome/pages/home/bloc/bloc.dart';
 import 'package:to_com_fome/pages/home/repository/home_repository.dart';
 import 'package:to_com_fome/pages/sales/bloc/bloc.dart';
 
+import 'model/user_model.dart';
 import 'pages/favorite/favorite_page.dart';
 import 'pages/home/home_page.dart';
 import 'pages/orders/orders_page.dart';
 import 'pages/sales/bloc/sales_bloc.dart';
 import 'pages/sales/repository/sales_repository.dart';
 import 'pages/sales/sales_page.dart';
+import 'pages/signin/signin_page.dart';
 
 class Home extends StatefulWidget {
   Home({Key key}) : super(key: key);
@@ -36,7 +42,6 @@ class _HomeState extends State<Home> {
       viewportFraction: 1.0,
     );
     _pageController.addListener(_handlePageChange);
-
     super.initState();
   }
 
@@ -50,7 +55,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Olá, fulano',
+          'Olá, ${Provider.of<UserModel>(context).name}',
           style: TextStyle(color: Colors.white),
         ),
         leading: Padding(
@@ -58,9 +63,27 @@ class _HomeState extends State<Home> {
           child: Image.asset('assets/images/tanamao.jpeg', fit: BoxFit.cover),
         ),
         actions: <Widget>[
-          Icon(Icons.search, color: Colors.white, size: 28),
+          !kReleaseMode
+              ? IconButton(
+                  icon: Icon(Foundation.monitor, color: Colors.white, size: 28),
+                  onPressed: () {
+                    SharedPreferencesMonitor.showPage();
+                  },
+                )
+              : SizedBox.shrink(),
           SizedBox(width: 10),
-          Icon(Icons.notifications_none, color: Colors.white, size: 28)
+          IconButton(
+            icon: Icon(AntDesign.logout, color: Colors.white, size: 28),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.setString('USER', null);
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (_) => SigninPage(),
+                  ),
+                  (v) => false);
+            },
+          ),
         ],
         centerTitle: true,
         backgroundColor: Color(0xFFf05925),
@@ -71,7 +94,8 @@ class _HomeState extends State<Home> {
           BlocProvider<HomeBloc>(
             create: (_) => HomeBloc(HomeRepository(client: DioBuilder.getDio()))
               ..add(LoadCategoriesEvent()),
-            child: HomePage(),
+            child: Provider.value(
+                value: Provider.of<UserModel>(context), child: HomePage()),
           ),
           BlocProvider<SalesBloc>(
             create: (_) =>
