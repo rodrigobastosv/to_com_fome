@@ -54,6 +54,22 @@ class RestaurantItem {
     return data;
   }
 
+  RestaurantItem copyWith({double valueWithDiscount}) {
+    return RestaurantItem(
+      name: name,
+      categoryId: categoryId,
+      createdAt: createdAt,
+      description: description,
+      id: id,
+      image: image,
+      imagePath: imagePath,
+      price: valueWithDiscount,
+      restaurantId: restaurantId,
+      type: type,
+      updatedAt: updatedAt,
+    );
+  }
+
   @override
   String toString() {
     return 'RestaurantItem{id: $id, restaurantId: $restaurantId, categoryId: $categoryId, name: $name, type: $type, description: $description, price: $price, image: $image, imagePath: $imagePath, createdAt: $createdAt, updatedAt: $updatedAt}';

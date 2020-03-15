@@ -1,4 +1,5 @@
 import 'package:animated_card/animated_card.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,15 @@ import 'package:to_com_fome/pages/home/bloc/bloc.dart';
 import 'package:to_com_fome/pages/restaurant/bloc/bloc.dart';
 import 'package:to_com_fome/pages/restaurant/repository/restaurant_picked_repository.dart';
 import 'package:to_com_fome/pages/restaurant/restaurant_page.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+final promocoes = [
+  'https://1.bp.blogspot.com/-8DqWkexSYjg/UArV5bxmnDI/AAAAAAAAAW0/2AsdbnOcfaY/s1600/promo.jpg',
+  'https://img.elo7.com.br/product/zoom/2119433/adesivo-vitrine-lojas-em-geral-promocoes-ofertas-mod-4-adesivo-para-lojas.jpg',
+  'https://media.gazetadopovo.com.br/2019/11/27173541/burguer-mcdonalds-black-friday-660x372.jpg',
+  'https://i0.wp.com/tribunadoplanalto.com.br/wp-content/uploads/2016/01/promocao.png?fit=467%2C300',
+  'https://tiagotessmann.com.br/wp-content/uploads/2017/01/Dicas-para-Apresentar-Promo%C3%A7%C3%B5es-Imperd%C3%ADveis-e-Irrecus%C3%A1veis.jpg',
+];
 
 class HomePage extends StatelessWidget {
   @override
@@ -25,81 +35,108 @@ class HomePage extends StatelessWidget {
           );
         } else if (state is CategoriesLoadedState) {
           final categories = state.categories;
-          return ListView.builder(
-            itemBuilder: (_, i) {
-              final category = categories[i];
-              final restaurants = category.restaurants;
-              return AnimatedCard(
-                child: Card(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        category.name,
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                      Container(
-                        height: 160,
-                        child: restaurants.isEmpty
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.warning,
-                                    color: Colors.yellow,
-                                  ),
-                                  SizedBox(width: 12),
-                                  Center(
-                                    child: Text(
-                                        'Nenhum restaurante nesta categoria!'),
-                                  ),
-                                ],
-                              )
-                            : ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (_, i) => Hero(
-                                  tag: '${category.name}-${restaurants[i].id}',
-                                  child: GestureDetector(
-                                    onTap: () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) {
-                                          return MultiBlocProvider(
-                                            providers: [
-                                              BlocProvider<
-                                                  RestaurantPickedBloc>(
-                                                create: (_) =>
-                                                    RestaurantPickedBloc(
-                                                  restaurants[i],
-                                                  client,
-                                                  RestaurantPickedRepository(
-                                                      client:
-                                                          DioBuilder.getDio()),
-                                                )..add(LoadItemsEvent()),
-                                              ),
-                                              BlocProvider<HomeBloc>.value(
-                                                value: context.bloc<HomeBloc>(),
-                                              ),
-                                            ],
-                                            child: Provider.value(
-                                                value: Provider.of<UserModel>(
-                                                    context),
-                                                child: RestaurantPage()),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    child: RestaurantWidget(restaurants[i]),
-                                  ),
-                                ),
-                                itemCount: restaurants.length,
-                              ),
-                      )
-                    ],
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: CarouselSlider.builder(
+                  itemCount: 5,
+                  autoPlay: true,
+                  itemBuilder: (_, i) => GestureDetector(
+                    onTap: () async => await launch('https://flutter.dev'),
+                    child: FancyShimmerImage(
+                      imageUrl: promocoes[i],
+                    ),
                   ),
                 ),
-              );
-            },
-            itemCount: categories.length,
+              ),
+              Expanded(
+                flex: 8,
+                child: ListView.builder(
+                  itemBuilder: (_, i) {
+                    final category = categories[i];
+                    final restaurants = category.restaurants;
+                    return AnimatedCard(
+                      child: Card(
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              category.name,
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              height: 160,
+                              child: restaurants.isEmpty
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.warning,
+                                          color: Colors.yellow,
+                                        ),
+                                        SizedBox(width: 12),
+                                        Center(
+                                          child: Text(
+                                              'Nenhum restaurante nesta categoria!'),
+                                        ),
+                                      ],
+                                    )
+                                  : ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (_, i) => Hero(
+                                        tag:
+                                            '${category.name}-${restaurants[i].id}',
+                                        child: GestureDetector(
+                                          onTap: () =>
+                                              Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (_) {
+                                                return MultiBlocProvider(
+                                                  providers: [
+                                                    BlocProvider<
+                                                        RestaurantPickedBloc>(
+                                                      create: (_) =>
+                                                          RestaurantPickedBloc(
+                                                        restaurants[i],
+                                                        client,
+                                                        RestaurantPickedRepository(
+                                                            client: DioBuilder
+                                                                .getDio()),
+                                                      )..add(LoadItemsEvent()),
+                                                    ),
+                                                    BlocProvider<
+                                                        HomeBloc>.value(
+                                                      value: context
+                                                          .bloc<HomeBloc>(),
+                                                    ),
+                                                  ],
+                                                  child: Provider.value(
+                                                      value: Provider.of<
+                                                          UserModel>(context),
+                                                      child: RestaurantPage()),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          child:
+                                              RestaurantWidget(restaurants[i]),
+                                        ),
+                                      ),
+                                      itemCount: restaurants.length,
+                                    ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  itemCount: categories.length,
+                ),
+              ),
+            ],
           );
         } else if (state is CategoriesErrorOnLoadState) {
           return Center(

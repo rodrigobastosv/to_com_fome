@@ -333,7 +333,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
         },
         title: Row(
           children: <Widget>[
-            Text(items[i].name),
+            Expanded(child: Text(items[i].name)),
             Spacer(),
             Text(
               'R\$ ${items[i].price.toStringAsFixed(2)}',

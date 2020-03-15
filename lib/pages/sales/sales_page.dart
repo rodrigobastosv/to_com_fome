@@ -48,7 +48,11 @@ class SalesPage extends StatelessWidget {
                         ],
                         child: Provider.value(
                           value: Provider.of<UserModel>(context, listen: false),
-                          child: ItemPickedPage(items[i].restaurantItem,
+                          child: ItemPickedPage(
+                              items[i].restaurantItem.copyWith(
+                                    valueWithDiscount:
+                                        double.parse(items[i].priceOff),
+                                  ),
                               fromSales: true),
                         ),
                       ),
