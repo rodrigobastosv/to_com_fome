@@ -35,18 +35,21 @@ class HomePage extends StatelessWidget {
           );
         } else if (state is CategoriesLoadedState) {
           final categories = state.categories;
+          final banners = state.banners;
+          print(banners);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Expanded(
                 flex: 2,
                 child: CarouselSlider.builder(
-                  itemCount: 5,
+                  itemCount: banners.length,
                   autoPlay: true,
                   itemBuilder: (_, i) => GestureDetector(
-                    onTap: () async => await launch('https://flutter.dev'),
+                    onTap: () async => await launch(banners[i].link),
                     child: FancyShimmerImage(
-                      imageUrl: promocoes[i],
+                      imageUrl:
+                          '$BASE_RESTAURANT_IMAGE_URL/${banners[i].imagePath}/${banners[i].image}',
                     ),
                   ),
                 ),

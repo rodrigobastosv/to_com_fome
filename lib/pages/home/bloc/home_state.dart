@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:to_com_fome/model/banner.dart';
 import 'package:to_com_fome/model/category_restaurant.dart';
 import 'package:to_com_fome/model/cupom.dart';
 import 'package:to_com_fome/model/payment_type_model.dart';
@@ -29,10 +30,11 @@ class CupomNotFoundState extends HomeState {
 }
 
 class CategoriesLoadedState extends HomeState {
-  CategoriesLoadedState(this.categories, this.paymentTypes);
+  CategoriesLoadedState(this.categories, this.paymentTypes, this.banners);
 
   final List<CategoryRestaurant> categories;
   final List<PaymentType> paymentTypes;
+  final List<Banner> banners;
 }
 
 class CategoriesErrorOnLoadState extends HomeState {

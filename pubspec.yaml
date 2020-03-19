@@ -46,6 +46,11 @@ flutter:
   assets:
     - assets/images/
 
+  fonts:
+    - family: CenturyGothic
+      fonts:
+        - asset: assets/fonts/CenturyGothic.ttf
+
   # fonts:
   #   - family: Schyler
   #     fonts:

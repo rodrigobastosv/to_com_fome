@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: SharedPreferencesMonitor.getKey(),
       theme: ThemeData(
         primaryColor: Color(0xFFf05925),
+        fontFamily: 'CenturyGothic',
       ),
       home: LoaderOverlay(
         useDefaultLoading: true,
