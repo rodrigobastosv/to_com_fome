@@ -93,7 +93,6 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           BlocProvider<HomeBloc>(
             create: (_) => HomeBloc(HomeRepository(client: DioBuilder.getDio()))
-              ..add(LoadCategoriesEvent())
               ..add(LoadCategoriesEvent()),
             child: Provider.value(
                 value: Provider.of<UserModel>(context), child: HomePage()),
