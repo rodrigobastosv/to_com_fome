@@ -7,6 +7,8 @@ abstract class HomeEvent {}
 
 class LoadCategoriesEvent extends HomeEvent {}
 
+class LoadBannersEvent extends HomeEvent {}
+
 class ChoosePaymentTypeEvent extends HomeEvent {
   ChoosePaymentTypeEvent(this.paymentType);
 

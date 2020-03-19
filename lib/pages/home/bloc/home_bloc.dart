@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:to_com_fome/model/banner.dart';
 import 'package:to_com_fome/model/cupom.dart';
 import 'package:to_com_fome/model/payment_type_model.dart';
 import 'package:to_com_fome/pages/home/repository/home_repository.dart';
@@ -15,6 +16,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   List<PaymentType> paymentTypes;
   PaymentType choosedPaymentType;
   List<Cupom> cupoms;
+  List<Banner> banners;
   Cupom choosedCupom;
 
   @override
@@ -28,8 +30,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       try {
         paymentTypes = await _repository.getPaymentTypes();
         cupoms = await _repository.getCupoms();
+        banners = await _repository.getBanners();
         final categories = await _repository.getCategoryRestaurant();
-        yield CategoriesLoadedState(categories, paymentTypes);
+        yield CategoriesLoadedState(categories, paymentTypes, banners);
       } catch (e) {
         yield CategoriesErrorOnLoadState(e.toString());
       }
