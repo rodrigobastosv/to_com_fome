@@ -13,6 +13,7 @@ import 'package:to_com_fome/pages/home/repository/home_repository.dart';
 import 'package:to_com_fome/pages/sales/bloc/bloc.dart';
 
 import 'model/user_model.dart';
+import 'pages/faq/faq_page.dart';
 import 'pages/favorite/favorite_page.dart';
 import 'pages/home/home_page.dart';
 import 'pages/orders/orders_page.dart';
@@ -115,6 +116,7 @@ class _HomeState extends State<Home> {
           ),
           FavoritePage(),
           OrdersPage(),
+          FaqPage(),
         ],
       ),
       bottomNavigationBar: BubbledNavigationBar(
@@ -166,6 +168,17 @@ class _HomeState extends State<Home> {
                 size: 30, color: Colors.white),
             title: Text(
               'Pedidos',
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+            bubbleColor: mainColor,
+          ),
+          BubbledNavigationBarItem(
+            icon: Icon(MaterialCommunityIcons.cloud_question,
+                size: 30, color: Colors.indigo),
+            activeIcon: Icon(MaterialCommunityIcons.cloud_question,
+                size: 30, color: Colors.white),
+            title: Text(
+              'FAQ',
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
             bubbleColor: mainColor,

@@ -26,6 +26,12 @@ class ItemAddedToOrderState extends RestaurantPickedState {
   final List<RestaurantItem> items;
 }
 
+class ItemRemovedFromOrderState extends RestaurantPickedState {
+  ItemRemovedFromOrderState(this.items);
+
+  final List<RestaurantItem> items;
+}
+
 class SaveOrderLoadingState extends RestaurantPickedState {}
 
 class OrderSavedState extends RestaurantPickedState {}

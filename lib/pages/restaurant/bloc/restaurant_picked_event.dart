@@ -14,6 +14,12 @@ class ItemPicked extends RestaurantPickedEvent {
   final OrderItem orderItem;
 }
 
+class RemoveItemFromOrder extends RestaurantPickedEvent {
+  RemoveItemFromOrder(this.orderItem);
+
+  final OrderItem orderItem;
+}
+
 class ItemAddedToOrder extends RestaurantPickedEvent {
   ItemAddedToOrder(this.item, this.qtd, this.obs);
 

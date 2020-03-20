@@ -37,7 +37,6 @@ class RestaurantPickedRepository {
     PaymentType paymentType,
   }) async {
     try {
-      print('i');
       await client.post(
         '''https://tanamaodelivery.com.br/api/cliente/finalizar-compra?
       name=${order.client.name}&
@@ -54,7 +53,6 @@ class RestaurantPickedRepository {
           responseType: ResponseType.plain,
         ),
       );
-      print('k');
     } catch (e) {
       print(e);
       print(e.toString());

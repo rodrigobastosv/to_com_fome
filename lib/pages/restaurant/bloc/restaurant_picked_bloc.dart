@@ -28,7 +28,6 @@ class RestaurantPickedBloc
   @override
   Stream<RestaurantPickedState> mapEventToState(
       RestaurantPickedEvent event) async* {
-    print('aaaaaaaaa');
     if (event is LoadItemsEvent) {
       print(restaurantPicked.slug);
       yield ItemsLoadingState();
@@ -43,8 +42,6 @@ class RestaurantPickedBloc
       }
     }
     if (event is ItemAddedToOrder) {
-      print(event);
-      print('ItemAddedToOrder');
       final restaurantItem = event.item;
       final qtdPicked = event.qtd;
       final orderItem = OrderItem(
@@ -56,10 +53,12 @@ class RestaurantPickedBloc
       order.items.add(orderItem);
       yield ItemAddedToOrderState(itemsOnMenu);
     }
+    if (event is RemoveItemFromOrder) {
+      order.items.remove(event.orderItem);
+      yield ItemRemovedFromOrderState(itemsOnMenu);
+    }
     if (event is SaveOrder) {
-      print('e');
       yield SaveOrderLoadingState();
-      print('d');
       await _repository.saveOrder(
         order: order,
         address: event.address,
@@ -67,7 +66,6 @@ class RestaurantPickedBloc
         mobile: event.mobile,
         paymentType: event.paymentType,
       );
-      print('e');
       yield OrderSavedState();
     }
   }
