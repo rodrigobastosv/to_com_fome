@@ -51,7 +51,7 @@ class RestaurantPickedRepository {
       'payment_way_id': paymentType.id,
       'user_id': cliente.id,
       'delivery_address': address,
-      'itens': order.items.map((item) {
+      'items': order.items.map((item) {
         return {
           'id': item.id,
           'price': item.value,
