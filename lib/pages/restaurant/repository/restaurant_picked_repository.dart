@@ -43,12 +43,13 @@ class RestaurantPickedRepository {
     PaymentType paymentType,
   }) async {
     Map orderJson = {
+      "restaurant_id": restaurant.id,
       'coupon_id': cupom?.id,
       'total': order.totalValue,
       'total_final': order.totalValue,
       'info': order.items.map((item) => item.obs).toList().toString(),
       'payment_way_id': paymentType.id,
-      'id_cliente': cliente.id,
+      'user_id': cliente.id,
       'delivery_address': address,
       'itens': order.items.map((item) {
         return {
