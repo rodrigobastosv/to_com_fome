@@ -1,8 +1,20 @@
 class OrderItem {
-  OrderItem({this.name, this.obs, this.qtd, this.value});
+  OrderItem(
+      {this.id,
+      this.name,
+      this.type,
+      this.categoryId,
+      this.obs,
+      this.restauranteId,
+      this.qtd,
+      this.value});
 
+  final int id;
   final String name;
   final String obs;
+  final String restauranteId;
+  final String categoryId;
+  final String type;
   final int qtd;
   final double value;
 

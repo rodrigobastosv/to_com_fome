@@ -415,11 +415,17 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                                           homeBloc.choosedPaymentType;
                                       if (choosedPaymentType != null) {
                                         await _repository.saveOrder(
+                                          restaurant: restaurantPickedBloc
+                                              .restaurantPicked,
                                           order: restaurantPickedBloc.order,
                                           address: address ?? user.address,
                                           district: district ?? user.district,
                                           mobile: mobile ?? user.mobile,
                                           paymentType: choosedPaymentType,
+                                          cliente: Provider.of<UserModel>(
+                                              context,
+                                              listen: false),
+                                          cupom: homeBloc.choosedCupom,
                                         );
                                         Flushbar(
                                           message: "Pedido salvo com sucesso",

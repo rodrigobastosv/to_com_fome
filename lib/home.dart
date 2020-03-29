@@ -10,8 +10,11 @@ import 'package:shared_preferences_monitor/shared_preferences_monitor.dart';
 import 'package:to_com_fome/core/dio_builder.dart';
 import 'package:to_com_fome/pages/home/bloc/bloc.dart';
 import 'package:to_com_fome/pages/home/repository/home_repository.dart';
+import 'package:to_com_fome/pages/orders/bloc/bloc.dart';
+import 'package:to_com_fome/pages/orders/repository/orders_repository.dart';
 import 'package:to_com_fome/pages/sales/bloc/bloc.dart';
 
+import 'core/dio_builder.dart';
 import 'model/user_model.dart';
 import 'pages/faq/faq_page.dart';
 import 'pages/favorite/favorite_page.dart';
@@ -115,7 +118,12 @@ class _HomeState extends State<Home> {
                 value: Provider.of<UserModel>(context), child: SalesPage()),
           ),
           FavoritePage(),
-          OrdersPage(),
+          BlocProvider(
+            create: (_) => OrdersBloc(
+                repository: OrdersRepository(client: DioBuilder.getDio()))
+              ..add(FetchOrders(Provider.of<UserModel>(context))),
+            child: OrdersPage(),
+          ),
           FaqPage(),
         ],
       ),

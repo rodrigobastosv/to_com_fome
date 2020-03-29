@@ -45,7 +45,10 @@ class RestaurantPickedBloc
       final restaurantItem = event.item;
       final qtdPicked = event.qtd;
       final orderItem = OrderItem(
+        id: restaurantItem.id,
+        categoryId: restaurantItem.categoryId,
         name: restaurantItem.name,
+        type: restaurantItem.type,
         qtd: qtdPicked,
         value: restaurantItem.price,
         obs: event.obs,
