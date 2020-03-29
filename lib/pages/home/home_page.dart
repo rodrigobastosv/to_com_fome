@@ -44,9 +44,11 @@ class HomePage extends StatelessWidget {
                 child: CarouselSlider.builder(
                   itemCount: banners.length,
                   autoPlay: true,
+                  viewportFraction: 1.0,
                   itemBuilder: (_, i) => GestureDetector(
                     onTap: () async => await launch(banners[i].link),
                     child: FancyShimmerImage(
+                      width: double.infinity,
                       imageUrl:
                           '$BASE_RESTAURANT_IMAGE_URL/${banners[i].imagePath}/${banners[i].image}',
                     ),

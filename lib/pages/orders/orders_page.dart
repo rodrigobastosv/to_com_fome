@@ -48,6 +48,22 @@ class OrdersPage extends StatelessWidget {
                       child: Row(
                         children: <Widget>[
                           Text(
+                            'Status: ',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            state.orders[i].status,
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
                             'Data: ',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
