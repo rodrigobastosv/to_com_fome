@@ -47,25 +47,28 @@ class RestaurantPickedRepository {
       'coupon_id': cupom?.id,
       'total': order.totalValue,
       'total_final': order.totalValue,
-      'info': order.items.map((item) => item.obs).toList().toString(),
+      'info': order.items.map((item) => item.obs).toString(),
       'payment_way_id': paymentType.id,
       'user_id': cliente.id,
       'delivery_address': address,
       'itens': order.items.map((item) {
         return {
           'id': item.id,
-          "restaurant_id": restaurant.id,
-          "category_id": item.categoryId,
-          "type": item.type,
-          "name": item.name,
-          "description": item.obs,
-          "promotion_id": ""
+          'price': item.value,
+          'restaurant_id': restaurant.id,
+          'category_id': item.categoryId,
+          'type': item.type,
+          'name': item.name,
+          'description': item.obs,
+          'promotion_id': ""
         };
       }).toList(),
     };
     print(orderJson);
+    print('---------------');
+    print(jsonEncode(orderJson));
     try {
-      final response = await client.post(
+      await client.post(
         'https://tanamaodelivery.com.br/api/cliente/finalizar-compra',
         options: Options(
           method: 'POST',
@@ -73,8 +76,6 @@ class RestaurantPickedRepository {
         ),
         data: jsonEncode(orderJson),
       );
-      print(response);
-      print(response.data);
     } catch (e) {
       print(e);
       print(e.toString());

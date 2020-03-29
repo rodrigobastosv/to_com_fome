@@ -5,8 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:to_com_fome/model/user_order.dart';
 import 'package:to_com_fome/pages/orders/bloc/bloc.dart';
 
-import 'mock_orders_page.dart';
-
 class OrdersPage extends StatelessWidget {
   final df1 = DateFormat('yyyy-mm-dd hh:mm:ss');
   final df2 = DateFormat('dd-mm-yyyy hh:mm:ss');
@@ -16,6 +14,11 @@ class OrdersPage extends StatelessWidget {
     return BlocBuilder<OrdersBloc, OrdersState>(
       builder: (_, state) {
         if (state is FetchOrdersSuccess) {
+          if (state.orders.isEmpty) {
+            return Center(
+              child: Text('Nenhuma compra realizada!'),
+            );
+          }
           return ListView.separated(
             itemBuilder: (_, i) => AnimatedCard(
               child: Card(
@@ -89,7 +92,7 @@ class OrdersPage extends StatelessWidget {
               ),
             ),
             separatorBuilder: (_, i) => Divider(),
-            itemCount: orders.length,
+            itemCount: state.orders.length,
           );
         } else {
           return Center(

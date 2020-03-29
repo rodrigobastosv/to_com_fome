@@ -36,7 +36,6 @@ class HomePage extends StatelessWidget {
         } else if (state is CategoriesLoadedState) {
           final categories = state.categories;
           final banners = state.banners;
-          print(banners);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -63,11 +62,15 @@ class HomePage extends StatelessWidget {
                     return AnimatedCard(
                       child: Card(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(
-                              category.name,
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 18),
+                              child: Text(
+                                category.name,
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
+                              ),
                             ),
                             Container(
                               height: 160,
