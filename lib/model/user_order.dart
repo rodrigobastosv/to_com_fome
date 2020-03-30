@@ -92,7 +92,7 @@ class UserOrderItems {
   String price;
   String image;
   String imagePath;
-  Null promotionId;
+  String promotionId;
   String createdAt;
   String updatedAt;
   Pivot pivot;

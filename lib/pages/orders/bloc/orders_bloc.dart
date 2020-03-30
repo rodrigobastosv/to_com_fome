@@ -20,7 +20,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
       print(event.user);
       try {
         final orders = await repository.getAllOrders(event.user);
-        yield FetchOrdersSuccess(orders);
+        yield FetchOrdersSuccess(orders ?? []);
       } on Exception {}
     }
   }
