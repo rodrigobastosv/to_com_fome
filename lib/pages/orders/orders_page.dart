@@ -6,8 +6,8 @@ import 'package:to_com_fome/model/user_order.dart';
 import 'package:to_com_fome/pages/orders/bloc/bloc.dart';
 
 class OrdersPage extends StatelessWidget {
-  final df1 = DateFormat('yyyy-mm-dd hh:mm:ss');
-  final df2 = DateFormat('dd-mm-yyyy hh:mm:ss');
+  final df1 = DateFormat('yyyy-MM-dd hh:mm:ss');
+  final df2 = DateFormat('dd-MM-yyyy HH:mm:ss');
 
   @override
   Widget build(BuildContext context) {
