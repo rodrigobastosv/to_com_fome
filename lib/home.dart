@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_monitor/shared_preferences_monitor.dart';
 import 'package:to_com_fome/core/dio_builder.dart';
+import 'package:to_com_fome/pages/favorite/bloc/bloc.dart';
+import 'package:to_com_fome/pages/favorite/repository/favorite_restaurant_repository.dart';
 import 'package:to_com_fome/pages/home/bloc/bloc.dart';
 import 'package:to_com_fome/pages/home/repository/home_repository.dart';
 import 'package:to_com_fome/pages/orders/bloc/bloc.dart';
@@ -117,7 +119,13 @@ class _HomeState extends State<Home> {
             child: Provider.value(
                 value: Provider.of<UserModel>(context), child: SalesPage()),
           ),
-          FavoritePage(),
+          BlocProvider(
+            create: (_) => FavoriteRestaurantBloc(
+                FavoriteRestaurantRepository(client: DioBuilder.getDio()))
+              ..add(FetchFavoriteRestaurants(
+                  Provider.of<UserModel>(context).id.toString())),
+            child: FavoritePage(),
+          ),
           BlocProvider(
             create: (_) => OrdersBloc(
                 repository: OrdersRepository(client: DioBuilder.getDio()))
