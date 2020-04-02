@@ -60,6 +60,7 @@ class RestaurantPickedBloc
       order.items.remove(event.orderItem);
       yield ItemRemovedFromOrderState(itemsOnMenu);
     }
+    if (event is DigitaCEP) {}
     if (event is SaveOrder) {
       yield SaveOrderLoadingState();
       await _repository.saveOrder(

@@ -113,6 +113,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.9"
+  email_validator:
+    dependency: "direct main"
+    description:
+      name: email_validator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   equatable:
     dependency: "direct main"
     description:
@@ -324,6 +331,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.23.1"
+  search_cep:
+    dependency: "direct main"
+    description:
+      name: search_cep
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -490,6 +504,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.5.0"
+  xml2json:
+    dependency: transitive
+    description:
+      name: xml2json
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.2.0"
   yaml:
     dependency: transitive
     description:

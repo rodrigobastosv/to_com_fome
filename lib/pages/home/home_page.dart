@@ -168,19 +168,19 @@ class RestaurantWidget extends StatelessWidget {
     return Container(
       width: 160,
       child: Column(
-        children: <Widget>[
+        children: [
           Card(
             semanticContainer: true,
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Container(
-              height: 100,
-              width: 100,
+              height: 140,
+              width: 140,
               child: FancyShimmerImage(
                 imageUrl:
                     '$BASE_RESTAURANT_IMAGE_URL/${restaurant.logoPath}/${restaurant.logo}',
                 errorWidget: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
+                  children: [
                     Icon(Ionicons.md_warning, color: Colors.red),
                     SizedBox(height: 6),
                     Text('Sem imagem'),
@@ -198,7 +198,7 @@ class RestaurantWidget extends StatelessWidget {
             child: Text(
               restaurant.name,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: mainColor, fontSize: 18),
+              style: TextStyle(color: mainColor, fontSize: 12),
             ),
           ),
         ],

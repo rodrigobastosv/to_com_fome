@@ -4,11 +4,11 @@ import 'dart:convert';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:to_com_fome/core/dio_builder.dart';
 import 'package:to_com_fome/model/user_model.dart';
+import 'package:to_com_fome/pages/forgot_password/forgot_password_page.dart';
 import 'package:to_com_fome/pages/signin/bloc.dart';
 import 'package:to_com_fome/pages/signin/signin_repository.dart';
 import 'package:to_com_fome/pages/signup/bloc/bloc.dart';
@@ -149,31 +149,14 @@ class _SigninPageState extends State<SigninPage> {
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: padding),
-                          child: MaterialButton(
-                            onPressed: () {},
-                            shape: Border.all(
-                                color: Color.fromRGBO(65, 103, 178, 1)),
-                            child: Row(
-                              children: <Widget>[
-                                Icon(
-                                  AntDesign.facebook_square,
-                                  color: Color.fromRGBO(65, 103, 178, 1),
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  'CONTINUAR COM FACEBOOK',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(65, 103, 178, 1),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: padding),
                           child: FlatButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ForgotPasswordPage(),
+                                ),
+                              );
+                            },
                             child: Text('Putz, não lembro minha senha :('),
                           ),
                         ),

@@ -20,6 +20,12 @@ class RemoveItemFromOrder extends RestaurantPickedEvent {
   final OrderItem orderItem;
 }
 
+class DigitaCEP extends RestaurantPickedEvent {
+  DigitaCEP(this.cep);
+
+  final String cep;
+}
+
 class ItemAddedToOrder extends RestaurantPickedEvent {
   ItemAddedToOrder(this.item, this.qtd, this.obs);
 
