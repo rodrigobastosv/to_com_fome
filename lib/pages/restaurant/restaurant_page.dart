@@ -1,6 +1,7 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:to_com_fome/core/API.dart';
 import 'package:to_com_fome/model/restaurant_item.dart';
@@ -43,6 +44,47 @@ class _RestaurantPageState extends State<RestaurantPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: GestureDetector(
+        onTap: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(value: restaurantPickedBloc),
+                  BlocProvider.value(value: homeBloc),
+                ],
+                child: Provider.value(
+                    value: Provider.of<UserModel>(context, listen: false),
+                    child: OrderSummaryPage()),
+              ),
+            ),
+          );
+        },
+        child: BlocBuilder<RestaurantPickedBloc, RestaurantPickedState>(
+          bloc: restaurantPickedBloc,
+          builder: (_, state) {
+            return Container(
+              height: 40,
+              color: Theme.of(context).primaryColor,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Octicons.list_unordered,
+                    color: Colors.white,
+                  ),
+                  SizedBox(width: 12),
+                  Text(
+                    'Ver Pedido: R\$ ${(restaurantPickedBloc.order.totalValue).toStringAsFixed(2)}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 22, color: Colors.white),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
       body: SafeArea(
         child: CustomScrollView(
           slivers: <Widget>[
@@ -232,42 +274,6 @@ class _RestaurantPageState extends State<RestaurantPage> {
                   ),
                   SizedBox(
                     height: 6,
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => MultiBlocProvider(
-                            providers: [
-                              BlocProvider.value(value: restaurantPickedBloc),
-                              BlocProvider.value(value: homeBloc),
-                            ],
-                            child: Provider.value(
-                                value: Provider.of<UserModel>(context,
-                                    listen: false),
-                                child: OrderSummaryPage()),
-                          ),
-                        ),
-                      );
-                    },
-                    child: BlocBuilder<RestaurantPickedBloc,
-                        RestaurantPickedState>(
-                      bloc: restaurantPickedBloc,
-                      builder: (_, state) {
-                        return Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Container(
-                            color: Theme.of(context).primaryColor,
-                            child: Text(
-                              'Ver Pedido: R\$ ${(restaurantPickedBloc.order.totalValue).toStringAsFixed(2)}',
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.white),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
                   ),
                   BlocListener<RestaurantPickedBloc, RestaurantPickedState>(
                     listener: (_, state) {

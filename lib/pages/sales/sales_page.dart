@@ -89,10 +89,11 @@ class SalesPage extends StatelessWidget {
                           ),
                         ),
                         Stack(
-                          children: <Widget>[
+                          children: [
                             Image.network(
                               '$BASE_RESTAURANT_IMAGE_URL/${items[i].restaurantItem.imagePath}/${items[i].restaurantItem.image}',
                               fit: BoxFit.fill,
+                              height: 130,
                             ),
                             Positioned(
                               left: 10,

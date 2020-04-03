@@ -36,12 +36,11 @@ class HomePage extends StatelessWidget {
         } else if (state is CategoriesLoadedState) {
           final categories = state.categories;
           final banners = state.banners;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Expanded(
-                flex: 2,
-                child: CarouselSlider.builder(
+          return ListView.builder(
+            itemBuilder: (_, i) {
+              if (i == 0) {
+                return CarouselSlider.builder(
+                  height: 120,
                   itemCount: banners.length,
                   autoPlay: true,
                   viewportFraction: 1.0,
@@ -53,98 +52,89 @@ class HomePage extends StatelessWidget {
                           '$BASE_RESTAURANT_IMAGE_URL/${banners[i].imagePath}/${banners[i].image}',
                     ),
                   ),
-                ),
-              ),
-              Expanded(
-                flex: 8,
-                child: ListView.builder(
-                  itemBuilder: (_, i) {
-                    final category = categories[i];
-                    final restaurants = category.restaurants;
-                    return AnimatedCard(
-                      child: Card(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(left: 18),
-                              child: Text(
-                                category.name,
-                                style: TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Container(
-                              height: 160,
-                              child: restaurants.isEmpty
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.warning,
-                                          color: Colors.yellow,
-                                        ),
-                                        SizedBox(width: 12),
-                                        Center(
-                                          child: Text(
-                                              'Nenhum restaurante nesta categoria!'),
-                                        ),
-                                      ],
-                                    )
-                                  : ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (_, i) => Hero(
-                                        tag:
-                                            '${category.name}-${restaurants[i].id}',
-                                        child: GestureDetector(
-                                          onTap: () =>
-                                              Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (_) {
-                                                return MultiBlocProvider(
-                                                  providers: [
-                                                    BlocProvider<
-                                                        RestaurantPickedBloc>(
-                                                      create: (_) =>
-                                                          RestaurantPickedBloc(
-                                                        restaurants[i],
-                                                        client,
-                                                        RestaurantPickedRepository(
-                                                            client: DioBuilder
-                                                                .getDio()),
-                                                      )..add(LoadItemsEvent()),
-                                                    ),
-                                                    BlocProvider<
-                                                        HomeBloc>.value(
-                                                      value: context
-                                                          .bloc<HomeBloc>(),
-                                                    ),
-                                                  ],
-                                                  child: Provider.value(
-                                                      value: Provider.of<
-                                                          UserModel>(context),
-                                                      child: RestaurantPage()),
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          child:
-                                              RestaurantWidget(restaurants[i]),
+                );
+              } else {
+                final category = categories[i - 1];
+                final restaurants = category.restaurants;
+                return AnimatedCard(
+                  child: Card(
+                    elevation: 0,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 18),
+                          child: Text(
+                            category.name,
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          height: 160,
+                          child: restaurants.isEmpty
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.warning,
+                                      color: Colors.yellow,
+                                    ),
+                                    SizedBox(width: 12),
+                                    Center(
+                                      child: Text(
+                                          'Nenhum restaurante nesta categoria!'),
+                                    ),
+                                  ],
+                                )
+                              : ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (_, i) => Hero(
+                                    tag:
+                                        '${category.name}-${restaurants[i].id}',
+                                    child: GestureDetector(
+                                      onTap: () => Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) {
+                                            return MultiBlocProvider(
+                                              providers: [
+                                                BlocProvider<
+                                                    RestaurantPickedBloc>(
+                                                  create: (_) =>
+                                                      RestaurantPickedBloc(
+                                                    restaurants[i],
+                                                    client,
+                                                    RestaurantPickedRepository(
+                                                        client: DioBuilder
+                                                            .getDio()),
+                                                  )..add(LoadItemsEvent()),
+                                                ),
+                                                BlocProvider<HomeBloc>.value(
+                                                  value:
+                                                      context.bloc<HomeBloc>(),
+                                                ),
+                                              ],
+                                              child: Provider.value(
+                                                  value: Provider.of<UserModel>(
+                                                      context),
+                                                  child: RestaurantPage()),
+                                            );
+                                          },
                                         ),
                                       ),
-                                      itemCount: restaurants.length,
+                                      child: RestaurantWidget(restaurants[i]),
                                     ),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                  itemCount: categories.length,
-                ),
-              ),
-            ],
+                                  ),
+                                  itemCount: restaurants.length,
+                                ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              }
+            },
+            itemCount: categories.length + 1,
           );
         } else if (state is CategoriesErrorOnLoadState) {
           return Center(

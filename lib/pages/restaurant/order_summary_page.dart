@@ -26,6 +26,8 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   String mobile;
   String address;
   String district;
+  String numero;
+  String complemento;
   String cepEscolhido;
   bool liberaPesquisaCep = false;
   bool isLoading = false;
@@ -390,6 +392,25 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                                   TextFormField(
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(),
+                                      hintText:
+                                          'Digite aqui o número do endereço',
+                                      labelText: 'Número Endereço',
+                                    ),
+                                    onSaved: (num) => numero = num,
+                                  ),
+                                  SizedBox(height: 12),
+                                  TextFormField(
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Digite aqui o Complemento',
+                                      labelText: 'Complemento',
+                                    ),
+                                    onSaved: (comp) => complemento = comp,
+                                  ),
+                                  SizedBox(height: 12),
+                                  TextFormField(
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
                                       hintText: 'Digite aqui seu Bairro',
                                       labelText: 'Bairro',
                                     ),
@@ -506,6 +527,16 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                                   : () async {
                                       if (_formKey.currentState.validate()) {
                                         _formKey.currentState.save();
+                                        String finalAddress =
+                                            '${(address ?? user.address)}';
+                                        if (numero.isNotEmpty) {
+                                          finalAddress =
+                                              '$finalAddress, Número: $numero';
+                                        }
+                                        if (complemento.isNotEmpty) {
+                                          finalAddress =
+                                              '$finalAddress, Complemento: $complemento';
+                                        }
                                         final choosedPaymentType =
                                             homeBloc.choosedPaymentType;
                                         if (choosedPaymentType != null) {
@@ -513,7 +544,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                                             restaurant: restaurantPickedBloc
                                                 .restaurantPicked,
                                             order: restaurantPickedBloc.order,
-                                            address: address ?? user.address,
+                                            address: finalAddress,
                                             district: district ?? user.district,
                                             mobile: mobile ?? user.mobile,
                                             paymentType: choosedPaymentType,

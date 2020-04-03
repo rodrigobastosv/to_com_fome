@@ -64,6 +64,7 @@ class RestaurantPickedRepository {
         };
       }).toList(),
     };
+    print(orderJson);
     try {
       await client.post(
         'https://tanamaodelivery.com.br/api/cliente/finalizar-compra',
