@@ -71,8 +71,8 @@ class SalesPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
                               SizedBox(
-                                height: 50,
-                                width: 80,
+                                height: 70,
+                                width: 70,
                                 child: Image.network(
                                   '$BASE_RESTAURANT_IMAGE_URL/${items[i].restaurant.logoPath}/${items[i].restaurant.logo}',
                                   fit: BoxFit.fill,

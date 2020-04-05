@@ -163,8 +163,8 @@ class RestaurantWidget extends StatelessWidget {
             semanticContainer: true,
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Container(
-              height: 140,
-              width: 140,
+              height: 130,
+              width: 130,
               child: FancyShimmerImage(
                 imageUrl:
                     '$BASE_RESTAURANT_IMAGE_URL/${restaurant.logoPath}/${restaurant.logo}',
@@ -182,7 +182,7 @@ class RestaurantWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10.0),
             ),
             elevation: 5,
-            margin: EdgeInsets.all(10),
+            margin: EdgeInsets.all(5),
           ),
           Expanded(
             child: Text(

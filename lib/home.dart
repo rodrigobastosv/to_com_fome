@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_monitor/shared_preferences_monitor.dart';
 import 'package:to_com_fome/core/dio_builder.dart';
 import 'package:to_com_fome/pages/favorite/bloc/bloc.dart';
@@ -25,7 +24,6 @@ import 'pages/orders/orders_page.dart';
 import 'pages/sales/bloc/sales_bloc.dart';
 import 'pages/sales/repository/sales_repository.dart';
 import 'pages/sales/sales_page.dart';
-import 'pages/signin/signin_page.dart';
 
 class Home extends StatefulWidget {
   Home({Key key}) : super(key: key);
@@ -66,7 +64,7 @@ class _HomeState extends State<Home> {
         ),
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Image.asset('assets/images/tanamao.jpeg', fit: BoxFit.cover),
+          child: Image.asset('assets/images/tanamao.jpg', fit: BoxFit.cover),
         ),
         actions: <Widget>[
           !kReleaseMode
@@ -78,18 +76,6 @@ class _HomeState extends State<Home> {
                 )
               : SizedBox.shrink(),
           SizedBox(width: 10),
-          IconButton(
-            icon: Icon(AntDesign.logout, color: Colors.white, size: 28),
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs.setString('USER', null);
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (_) => SigninPage(),
-                  ),
-                  (v) => false);
-            },
-          ),
         ],
         centerTitle: true,
         backgroundColor: Color(0xFFf05925),
