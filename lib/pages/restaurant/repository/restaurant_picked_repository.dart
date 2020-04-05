@@ -24,7 +24,9 @@ class RestaurantPickedRepository {
       );
       final decodedResponse = jsonDecode(response.data);
       final list = decodedResponse['data'] as List;
-      return List.generate(list.length, (i) => CategoryGroup.fromJson(list[i]));
+      final categories = list[0]['categories'];
+      return List.generate(
+          categories.length, (i) => CategoryGroup.fromJson(categories[i]));
     } catch (e) {
       print(e.toString());
       return null;

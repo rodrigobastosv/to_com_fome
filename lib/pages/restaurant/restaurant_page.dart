@@ -308,8 +308,6 @@ class _RestaurantPageState extends State<RestaurantPage> {
                           );
                         } else if (state is ItemsLoadedState) {
                           final categories = state.categories;
-                          print(categories[0].restaurantItems.length);
-                          print(categories[1].restaurantItems.length);
                           return getCategories(categories);
                         } else if (state is ItemAddedToOrderState) {
                           final categories = state.items;
@@ -342,7 +340,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
       controller: ScrollController(),
       shrinkWrap: true,
       itemBuilder: (_, i) => ExpansionTile(
-        title: Text(categories[i].category.name),
+        title: Text(categories[i].categoryName),
         children: getListItems(categories[i].restaurantItems),
       ),
       itemCount: categories.length,

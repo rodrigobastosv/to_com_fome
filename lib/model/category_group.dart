@@ -7,6 +7,7 @@ class CategoryGroup {
   int id;
   String restaurantId;
   String categoryId;
+  String categoryName;
   String createdAt;
   String updatedAt;
   List<RestaurantItem> restaurantItems;
@@ -17,6 +18,7 @@ class CategoryGroup {
       {this.id,
       this.restaurantId,
       this.categoryId,
+      this.categoryName,
       this.createdAt,
       this.updatedAt,
       this.restaurantItems,
@@ -27,6 +29,7 @@ class CategoryGroup {
     id = json['id'];
     restaurantId = json['restaurant_id'];
     categoryId = json['category_id'];
+    categoryName = json['name'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     if (json['items'] != null) {
@@ -48,6 +51,7 @@ class CategoryGroup {
     data['id'] = this.id;
     data['restaurant_id'] = this.restaurantId;
     data['category_id'] = this.categoryId;
+    data['name'] = this.categoryName;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     if (this.restaurantItems != null) {
@@ -64,6 +68,6 @@ class CategoryGroup {
 
   @override
   String toString() {
-    return 'Category{id: $id, restaurantId: $restaurantId, categoryId: $categoryId, createdAt: $createdAt, updatedAt: $updatedAt, restaurantItem: $restaurantItems, restaurant: $restaurant, category: $category}';
+    return 'CategoryGroup{id: $id, restaurantId: $restaurantId, categoryId: $categoryId, createdAt: $createdAt, updatedAt: $updatedAt, restaurantItems: $restaurantItems, restaurant: $restaurant, category: $category}';
   }
 }
