@@ -15,7 +15,7 @@ class HomeRepository {
   Future<List<CategoryRestaurant>> getCategoryRestaurant() async {
     try {
       final response = await client.get(
-        '$ADMIN/$CATEGORIES',
+        '$ADMIN/$CATEGORIES?featured=Sim',
         options: Options(
           method: 'GET',
           responseType: ResponseType.plain,

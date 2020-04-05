@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:to_com_fome/model/category_group.dart';
 import 'package:to_com_fome/model/cupom.dart';
 import 'package:to_com_fome/model/order.dart';
 import 'package:to_com_fome/model/payment_type_model.dart';
 import 'package:to_com_fome/model/restaurant.dart';
-import 'package:to_com_fome/model/restaurant_item.dart';
 import 'package:to_com_fome/model/user_model.dart';
 
 class RestaurantPickedRepository {
@@ -13,10 +13,10 @@ class RestaurantPickedRepository {
 
   final Dio client;
 
-  Future<List<RestaurantItem>> getItemsRestaurant(String restaurantSlug) async {
+  Future<List<CategoryGroup>> getItemsRestaurant(String restaurantSlug) async {
     try {
       final response = await client.get(
-        'restaurante/$restaurantSlug/cardapios',
+        'restaurante/$restaurantSlug/restaurante_categorias',
         options: Options(
           method: 'GET',
           responseType: ResponseType.plain,
@@ -24,8 +24,7 @@ class RestaurantPickedRepository {
       );
       final decodedResponse = jsonDecode(response.data);
       final list = decodedResponse['data'] as List;
-      return List.generate(
-          list.length, (i) => RestaurantItem.fromJson(list[i]));
+      return List.generate(list.length, (i) => CategoryGroup.fromJson(list[i]));
     } catch (e) {
       print(e.toString());
       return null;

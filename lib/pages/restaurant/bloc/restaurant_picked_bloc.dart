@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:to_com_fome/model/category_group.dart';
 import 'package:to_com_fome/model/order.dart';
 import 'package:to_com_fome/model/order_item.dart';
 import 'package:to_com_fome/model/restaurant.dart';
@@ -18,6 +19,7 @@ class RestaurantPickedBloc
   }
 
   Order order;
+  List<CategoryGroup> categoriesOnMenu;
   List<RestaurantItem> itemsOnMenu;
   final Restaurant restaurantPicked;
   final RestaurantPickedRepository _repository;
@@ -29,13 +31,12 @@ class RestaurantPickedBloc
   Stream<RestaurantPickedState> mapEventToState(
       RestaurantPickedEvent event) async* {
     if (event is LoadItemsEvent) {
-      print(restaurantPicked.slug);
       yield ItemsLoadingState();
 
       try {
-        itemsOnMenu =
+        categoriesOnMenu =
             await _repository.getItemsRestaurant(restaurantPicked.slug);
-        yield ItemsLoadedState(itemsOnMenu);
+        yield ItemsLoadedState(categoriesOnMenu);
       } catch (e) {
         print(e.toString());
         yield ItemsErrorState(e.toString());
@@ -54,11 +55,11 @@ class RestaurantPickedBloc
         obs: event.obs,
       );
       order.items.add(orderItem);
-      yield ItemAddedToOrderState(itemsOnMenu);
+      yield ItemAddedToOrderState(categoriesOnMenu);
     }
     if (event is RemoveItemFromOrder) {
       order.items.remove(event.orderItem);
-      yield ItemRemovedFromOrderState(itemsOnMenu);
+      yield ItemRemovedFromOrderState(categoriesOnMenu);
     }
     if (event is DigitaCEP) {}
     if (event is SaveOrder) {

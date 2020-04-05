@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:to_com_fome/core/API.dart';
+import 'package:to_com_fome/model/category_group.dart';
 import 'package:to_com_fome/model/restaurant_item.dart';
 import 'package:to_com_fome/model/user_model.dart';
 import 'package:to_com_fome/pages/home/bloc/bloc.dart';
@@ -306,14 +307,16 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             ],
                           );
                         } else if (state is ItemsLoadedState) {
-                          final restaurantItems = state.items;
-                          return _getRestaurantItemsList(restaurantItems);
+                          final categories = state.categories;
+                          print(categories[0].restaurantItems.length);
+                          print(categories[1].restaurantItems.length);
+                          return getCategories(categories);
                         } else if (state is ItemAddedToOrderState) {
-                          final restaurantItems = state.items;
-                          return _getRestaurantItemsList(restaurantItems);
+                          final categories = state.items;
+                          return getCategories(categories);
                         } else if (state is ItemRemovedFromOrderState) {
-                          final restaurantItems = state.items;
-                          return _getRestaurantItemsList(restaurantItems);
+                          final categories = state.items;
+                          return getCategories(categories);
                         } else {
                           return Container(
                             child: Center(
@@ -332,6 +335,48 @@ class _RestaurantPageState extends State<RestaurantPage> {
         ),
       ),
     );
+  }
+
+  Widget getCategories(List<CategoryGroup> categories) {
+    return ListView.builder(
+      controller: ScrollController(),
+      shrinkWrap: true,
+      itemBuilder: (_, i) => ExpansionTile(
+        title: Text(categories[i].category.name),
+        children: getListItems(categories[i].restaurantItems),
+      ),
+      itemCount: categories.length,
+    );
+  }
+
+  List<Widget> getListItems(List<RestaurantItem> items) {
+    return items
+        .map((item) => ListTile(
+              onTap: () {
+                Navigator.of(context).push((MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                        value: restaurantPickedBloc,
+                        child: ItemPickedPage(item)))));
+              },
+              title: Row(
+                children: <Widget>[
+                  Expanded(child: Text(item.name)),
+                  Spacer(),
+                  Text(
+                    'R\$ ${item.price.toStringAsFixed(2)}',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                ],
+              ),
+              leading: Hero(
+                tag: '${item.name}',
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      '$BASE_RESTAURANT_IMAGE_URL/uploads/item/${item.image}'),
+                ),
+              ),
+            ))
+        .toList();
   }
 
   Widget _getRestaurantItemsList(List<RestaurantItem> items) {

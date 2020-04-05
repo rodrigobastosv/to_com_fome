@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:to_com_fome/model/restaurant_item.dart';
+import 'package:to_com_fome/model/category_group.dart';
 
 @immutable
 abstract class RestaurantPickedState {}
@@ -9,9 +9,9 @@ class InitialRestaurantPickedState extends RestaurantPickedState {}
 class ItemsLoadingState extends RestaurantPickedState {}
 
 class ItemsLoadedState extends RestaurantPickedState {
-  ItemsLoadedState(this.items);
+  ItemsLoadedState(this.categories);
 
-  final List<RestaurantItem> items;
+  final List<CategoryGroup> categories;
 }
 
 class ItemsErrorState extends RestaurantPickedState {
@@ -23,13 +23,13 @@ class ItemsErrorState extends RestaurantPickedState {
 class ItemAddedToOrderState extends RestaurantPickedState {
   ItemAddedToOrderState(this.items);
 
-  final List<RestaurantItem> items;
+  final List<CategoryGroup> items;
 }
 
 class ItemRemovedFromOrderState extends RestaurantPickedState {
   ItemRemovedFromOrderState(this.items);
 
-  final List<RestaurantItem> items;
+  final List<CategoryGroup> items;
 }
 
 class SaveOrderLoadingState extends RestaurantPickedState {}
