@@ -23,12 +23,12 @@ class RestaurantPickedRepository {
         ),
       );
       final decodedResponse = jsonDecode(response.data);
-      final list = decodedResponse['data'] as List;
-      final categories = list[0]['categories'];
-      final listCategories = List.generate(
-          categories.length, (i) => CategoryGroup.fromJson(categories[i]));
+      final data = decodedResponse['data'];
+      final list = data['categories'] as List;
+      final listCategories =
+          List.generate(list.length, (i) => CategoryGroup.fromJson(list[i]));
       return listCategories
-          .where((categories) => categories.restaurantItems.isNotEmpty)
+          .where((categories) => (categories.restaurantItems ?? []).isNotEmpty)
           .toList();
     } catch (e) {
       print(e.toString());
