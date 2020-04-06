@@ -54,12 +54,6 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   }
 
   @override
-  void dispose() {
-    restaurantPickedBloc.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
