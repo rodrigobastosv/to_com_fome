@@ -17,6 +17,7 @@ import 'package:to_com_fome/pages/sales/bloc/bloc.dart';
 
 import 'core/dio_builder.dart';
 import 'model/user_model.dart';
+import 'pages/cards/save_card_page.dart';
 import 'pages/faq/faq_page.dart';
 import 'pages/favorite/favorite_page.dart';
 import 'pages/home/home_page.dart';
@@ -118,6 +119,7 @@ class _HomeState extends State<Home> {
               ..add(FetchOrders(Provider.of<UserModel>(context))),
             child: OrdersPage(),
           ),
+          SaveCardPage(),
           FaqPage(),
         ],
       ),
@@ -170,6 +172,16 @@ class _HomeState extends State<Home> {
                 size: 30, color: Colors.white),
             title: Text(
               'Pedidos',
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+            bubbleColor: mainColor,
+          ),
+          BubbledNavigationBarItem(
+            icon: Icon(FontAwesome.credit_card, size: 30, color: Colors.green),
+            activeIcon:
+                Icon(FontAwesome.credit_card, size: 30, color: Colors.white),
+            title: Text(
+              'Cartões',
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
             bubbleColor: mainColor,
