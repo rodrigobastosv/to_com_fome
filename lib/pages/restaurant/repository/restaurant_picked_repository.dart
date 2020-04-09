@@ -83,4 +83,26 @@ class RestaurantPickedRepository {
       print(e.toString());
     }
   }
+
+  Future<void> saveCard({
+    String userId,
+    String name,
+    String cardNumber,
+    String cvv,
+    String expiration,
+    String cpf,
+  }) async {
+    try {
+      await client.post(
+        'https://tanamaodelivery.com.br/api/card?user_id=${userId}&name_card=${name}&number_card=${cardNumber}&cvv_card=${cvv}&expiration_card=$expiration&cpf_card=$cpf',
+        options: Options(
+          method: 'POST',
+          responseType: ResponseType.plain,
+        ),
+      );
+    } catch (e) {
+      print(e);
+      print(e.toString());
+    }
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:flashy_tab_bar/flashy_tab_bar.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:search_cep/search_cep.dart';
 import 'package:to_com_fome/core/dio_builder.dart';
+import 'package:to_com_fome/model/cartao.dart';
 import 'package:to_com_fome/model/order.dart';
 import 'package:to_com_fome/model/user_model.dart';
 
@@ -13,6 +15,7 @@ import '../home/bloc/bloc.dart';
 import 'bloc/restaurant_picked_bloc.dart';
 import 'bloc/restaurant_picked_event.dart';
 import 'bloc/restaurant_picked_state.dart';
+import 'list_card_page.dart';
 import 'repository/restaurant_picked_repository.dart';
 
 class OrderSummaryPage extends StatefulWidget {
@@ -20,7 +23,8 @@ class OrderSummaryPage extends StatefulWidget {
   _OrderSummaryPageState createState() => _OrderSummaryPageState();
 }
 
-class _OrderSummaryPageState extends State<OrderSummaryPage> {
+class _OrderSummaryPageState extends State<OrderSummaryPage>
+    with TickerProviderStateMixin {
   GlobalKey<FormState> _formKey;
 
   String mobile;
@@ -31,6 +35,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   String cepEscolhido;
   bool liberaPesquisaCep = false;
   bool isLoading = false;
+  int tabEscolhida;
 
   TextEditingController addressController;
   TextEditingController districtController;
@@ -39,10 +44,12 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   RestaurantPickedBloc restaurantPickedBloc;
   UserModel user;
 
+  Cartao cardPicked;
   RestaurantPickedRepository _repository;
 
   @override
   void initState() {
+    tabEscolhida = 0;
     homeBloc = BlocProvider.of<HomeBloc>(context);
     restaurantPickedBloc = BlocProvider.of<RestaurantPickedBloc>(context);
     user = Provider.of<UserModel>(context, listen: false);
@@ -238,7 +245,52 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                         Divider(height: 10),
                         Expanded(
                           child: ListTile(
-                              title: Text('Meio de Pagamento'),
+                            title: Text('como vai ser o pagamento?'),
+                          ),
+                        ),
+                        FlashyTabBar(
+                          selectedIndex: tabEscolhida,
+                          showElevation: true,
+                          onItemSelected: (index) => setState(() {
+                            tabEscolhida = index;
+                          }),
+                          items: [
+                            FlashyTabBarItem(
+                              icon: Icon(Icons.phone_android),
+                              title: Text('pelo app'),
+                            ),
+                            FlashyTabBarItem(
+                              icon: Icon(Icons.motorcycle),
+                              title: Text('na entrega'),
+                            ),
+                          ],
+                        ),
+                        if (tabEscolhida == 0)
+                          Expanded(
+                            child: ListTile(
+                              title: Text('Escolha um cartao'),
+                              onTap: () async {
+                                final cartaoEscolhido =
+                                    await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          ListCardPage(user, homeBloc.cartoes)),
+                                );
+                                if (cartaoEscolhido != null) {
+                                  setState(() {
+                                    cardPicked = cartaoEscolhido;
+                                  });
+                                }
+                              },
+                              subtitle: cardPicked != null
+                                  ? Text(cardPicked.numberCard)
+                                  : null,
+                            ),
+                          )
+                        else
+                          Expanded(
+                            child: ListTile(
+                              title: Text('Escolha a forma de pagamento'),
                               subtitle: Text(homeBloc.choosedPaymentType != null
                                   ? homeBloc.choosedPaymentType.name
                                   : ''),
@@ -287,8 +339,9 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                                     );
                                   },
                                 );
-                              }),
-                        ),
+                              },
+                            ),
+                          ),
                         Divider(height: 10),
                         Expanded(
                           flex: 2,
@@ -519,6 +572,24 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                                       .order.items.isEmpty
                                   ? null
                                   : () async {
+                                      final valorMinimo = double.parse(
+                                          restaurantPickedBloc
+                                              .restaurantPicked.valueMin);
+                                      if (valorMinimo >
+                                          restaurantPickedBloc
+                                              .order.totalValue) {
+                                        Flushbar(
+                                          message: "Valor minimo nao atingido",
+                                          icon: Icon(
+                                            Icons.warning,
+                                            size: 28.0,
+                                            color: Colors.yellowAccent,
+                                          ),
+                                          duration: Duration(seconds: 1),
+                                        )..show(context);
+                                        return;
+                                      }
+
                                       if (_formKey.currentState.validate()) {
                                         _formKey.currentState.save();
                                         String finalAddress =
@@ -533,54 +604,110 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                                         }
                                         final choosedPaymentType =
                                             homeBloc.choosedPaymentType;
-                                        if (choosedPaymentType != null) {
-                                          await _repository.saveOrder(
-                                            restaurant: restaurantPickedBloc
-                                                .restaurantPicked,
-                                            order: restaurantPickedBloc.order,
-                                            address: finalAddress,
-                                            district: district ?? user.district,
-                                            mobile: mobile ?? user.mobile,
-                                            paymentType: choosedPaymentType,
-                                            cliente: Provider.of<UserModel>(
-                                                context,
-                                                listen: false),
-                                            cupom: homeBloc.choosedCupom,
-                                          );
-                                          Flushbar(
-                                            message: "Pedido salvo com sucesso",
-                                            icon: Icon(
-                                              Icons.check,
-                                              size: 28.0,
-                                              color: Colors.white,
-                                            ),
-                                            backgroundColor: Colors.green,
-                                            duration: Duration(seconds: 1),
-                                          )..show(_).then(
-                                              (__) => Navigator.of(context)
-                                                  .pushReplacement(
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      Provider.value(
-                                                          value: Provider.of<
-                                                                  UserModel>(
-                                                              context,
-                                                              listen: false),
-                                                          child: Home()),
-                                                ),
+                                        if (tabEscolhida == 0) {
+                                          if (cardPicked == null) {
+                                            Flushbar(
+                                              message: "Escolha um cartão",
+                                              icon: Icon(
+                                                Icons.warning,
+                                                size: 28.0,
+                                                color: Colors.black,
                                               ),
+                                              backgroundColor: Colors.yellow,
+                                              duration: Duration(seconds: 1),
+                                            )..show(_);
+                                          } else {
+                                            await _repository.saveOrder(
+                                              restaurant: restaurantPickedBloc
+                                                  .restaurantPicked,
+                                              order: restaurantPickedBloc.order,
+                                              address: finalAddress,
+                                              district:
+                                                  district ?? user.district,
+                                              mobile: mobile ?? user.mobile,
+                                              paymentType: choosedPaymentType,
+                                              cliente: Provider.of<UserModel>(
+                                                  context,
+                                                  listen: false),
+                                              cupom: homeBloc.choosedCupom,
                                             );
+                                            Flushbar(
+                                              message:
+                                                  "Pedido salvo com sucesso",
+                                              icon: Icon(
+                                                Icons.check,
+                                                size: 28.0,
+                                                color: Colors.white,
+                                              ),
+                                              backgroundColor: Colors.green,
+                                              duration: Duration(seconds: 1),
+                                            )..show(_).then(
+                                                (__) => Navigator.of(context)
+                                                    .pushReplacement(
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        Provider.value(
+                                                            value: Provider.of<
+                                                                    UserModel>(
+                                                                context,
+                                                                listen: false),
+                                                            child: Home()),
+                                                  ),
+                                                ),
+                                              );
+                                          }
                                         } else {
-                                          Flushbar(
-                                            message:
-                                                "Escolha um meio de pagamento",
-                                            icon: Icon(
-                                              Icons.warning,
-                                              size: 28.0,
-                                              color: Colors.yellowAccent,
-                                            ),
-                                            duration: Duration(seconds: 1),
-                                          )..show(context);
+                                          if (choosedPaymentType != null) {
+                                            await _repository.saveOrder(
+                                              restaurant: restaurantPickedBloc
+                                                  .restaurantPicked,
+                                              order: restaurantPickedBloc.order,
+                                              address: finalAddress,
+                                              district:
+                                                  district ?? user.district,
+                                              mobile: mobile ?? user.mobile,
+                                              paymentType: choosedPaymentType,
+                                              cliente: Provider.of<UserModel>(
+                                                  context,
+                                                  listen: false),
+                                              cupom: homeBloc.choosedCupom,
+                                            );
+                                            Flushbar(
+                                              message:
+                                                  "Pedido salvo com sucesso",
+                                              icon: Icon(
+                                                Icons.check,
+                                                size: 28.0,
+                                                color: Colors.white,
+                                              ),
+                                              backgroundColor: Colors.green,
+                                              duration: Duration(seconds: 1),
+                                            )..show(_).then(
+                                                (__) => Navigator.of(context)
+                                                    .pushReplacement(
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        Provider.value(
+                                                            value: Provider.of<
+                                                                    UserModel>(
+                                                                context,
+                                                                listen: false),
+                                                            child: Home()),
+                                                  ),
+                                                ),
+                                              );
+                                          } else {
+                                            Flushbar(
+                                              message:
+                                                  "Escolha um meio de pagamento",
+                                              icon: Icon(
+                                                Icons.warning,
+                                                size: 28.0,
+                                                color: Colors.yellowAccent,
+                                              ),
+                                              duration: Duration(seconds: 1),
+                                            )..show(context);
+                                          }
                                         }
                                       }
                                     },

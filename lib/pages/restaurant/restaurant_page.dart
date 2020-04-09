@@ -259,17 +259,50 @@ class _RestaurantPageState extends State<RestaurantPage> {
                           ],
                         ),
                       ),
-                      Column(
-                        children: <Widget>[
-                          Icon(Icons.info_outline,
-                              color: Theme.of(context).primaryColor),
-                          Text(
-                            'infos',
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 12),
-                          ),
-                        ],
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (_) {
+                                return SimpleDialog(
+                                  title: Text(
+                                    'Informações',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  children: <Widget>[
+                                    ListTile(
+                                      title: Text('Horário de Abertura'),
+                                      subtitle: Text(restaurantPickedBloc
+                                          .restaurantPicked.openingHoursStart),
+                                    ),
+                                    ListTile(
+                                      title: Text('Horário de Fechamento'),
+                                      subtitle: Text(restaurantPickedBloc
+                                          .restaurantPicked.openingHoursEnd),
+                                    ),
+                                    ListTile(
+                                      title: Text('Telefone para Contato'),
+                                      subtitle: Text(restaurantPickedBloc
+                                          .restaurantPicked.phone),
+                                    ),
+                                  ],
+                                );
+                              });
+                        },
+                        child: Column(
+                          children: <Widget>[
+                            Icon(Icons.info_outline,
+                                color: Theme.of(context).primaryColor),
+                            Text(
+                              'infos',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 12),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
